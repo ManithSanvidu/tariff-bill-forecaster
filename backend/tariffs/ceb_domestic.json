@@ -1,0 +1,40 @@
+{
+  "tariff_id": "ceb_domestic_placeholder",
+  "utility": "electricity",
+  "provider": "CEB",
+  "name": "CEB Domestic Electricity Tariff (Placeholder / Unverified)",
+  "effective_from": "2023-07-01",
+  "effective_to": null,
+  "verified": false,
+  "verification_todo": "TODO: Verify values against official PUCSL schedule at https://www.pucsl.gov.lk/electricity/tariff/domestic/",
+  "notes": "Sri Lankan CEB Domestic structure with bifurcated two-tier scheme (<=60 units category vs >60 units category). Marked unverified placeholder rates.",
+  "category_rules": [
+    {
+      "max_units": 60,
+      "fixed_charge_by_block": [
+        {"from_unit": 0, "to_unit": 30, "fixed_charge": 180.0},
+        {"from_unit": 31, "to_unit": 60, "fixed_charge": 360.0}
+      ],
+      "blocks": [
+        {"from_unit": 0, "to_unit": 30, "rate": 12.0},
+        {"from_unit": 31, "to_unit": 60, "rate": 30.0}
+      ]
+    },
+    {
+      "max_units": null,
+      "fixed_charge_by_block": [
+        {"from_unit": 61, "to_unit": 90, "fixed_charge": 480.0},
+        {"from_unit": 91, "to_unit": 120, "fixed_charge": 1180.0},
+        {"from_unit": 121, "to_unit": 180, "fixed_charge": 1720.0},
+        {"from_unit": 181, "to_unit": null, "fixed_charge": 2150.0}
+      ],
+      "blocks": [
+        {"from_unit": 0, "to_unit": 60, "rate": 42.0},
+        {"from_unit": 61, "to_unit": 90, "rate": 42.0},
+        {"from_unit": 91, "to_unit": 120, "rate": 50.0},
+        {"from_unit": 121, "to_unit": 180, "rate": 50.0},
+        {"from_unit": 181, "to_unit": null, "rate": 75.0}
+      ]
+    }
+  ]
+}

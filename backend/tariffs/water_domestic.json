@@ -1,0 +1,32 @@
+{
+  "tariff_id": "water_domestic_placeholder",
+  "utility": "water",
+  "provider": "NWSDB",
+  "name": "NWSDB Domestic Water Tariff (Placeholder / Unverified)",
+  "effective_from": "2023-08-01",
+  "effective_to": null,
+  "verified": false,
+  "verification_todo": "TODO: Verify values against official NWSDB gazette schedule at https://www.pucsl.gov.lk/electricity/tariff/domestic/ and NWSDB tariff sheets.",
+  "notes": "Sri Lankan National Water Supply & Drainage Board domestic tiered schedule with progressive volumetric rates and fixed charges.",
+  "category_rules": [
+    {
+      "max_units": null,
+      "fixed_charge_by_block": [
+        {"from_unit": 0, "to_unit": 5, "fixed_charge": 300.0},
+        {"from_unit": 6, "to_unit": 10, "fixed_charge": 300.0},
+        {"from_unit": 11, "to_unit": 15, "fixed_charge": 340.0},
+        {"from_unit": 16, "to_unit": 20, "fixed_charge": 400.0},
+        {"from_unit": 21, "to_unit": 25, "fixed_charge": 580.0},
+        {"from_unit": 26, "to_unit": null, "fixed_charge": 1000.0}
+      ],
+      "blocks": [
+        {"from_unit": 0, "to_unit": 5, "rate": 60.0},
+        {"from_unit": 6, "to_unit": 10, "rate": 80.0},
+        {"from_unit": 11, "to_unit": 15, "rate": 100.0},
+        {"from_unit": 12, "to_unit": 20, "rate": 110.0},
+        {"from_unit": 21, "to_unit": 25, "rate": 130.0},
+        {"from_unit": 26, "to_unit": null, "rate": 160.0}
+      ]
+    }
+  ]
+}
