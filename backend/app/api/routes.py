@@ -15,7 +15,15 @@ from fastapi import FastAPI, Depends, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
+import os
+import sys
 import re
+
+# Ensure backend root is on Python sys.path so app modules import cleanly on Vercel
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
+if backend_root not in sys.path:
+    sys.path.insert(0, backend_root)
 
 from app.db.session import get_db, init_db
 from app.db.models import Household, MeterReading, Alert, Prediction, BillingCycle
@@ -50,8 +58,21 @@ tariff_engine = TariffEngine()
 forecaster = MLConsumptionForecaster(tariff_engine=tariff_engine)
 validator = ReadingValidator()
 
-# Ensure DB tables exist
-init_db()
+# Safely initialize DB tables on startup (does not crash lambda if DB is cold/unconfigured)
+try:
+    init_db()
+except Exception as e:
+    print(f"Warning: init_db failed on startup: {e}")
+
+
+@app.get("/")
+def health_check():
+    """Root health check endpoint for Vercel and monitoring."""
+    return {
+        "status": "healthy",
+        "service": "Tiered Utility Tariff Predictor API",
+        "version": "1.0.0"
+    }
 
 
 # --- Pydantic Request / Response Schemas ---
