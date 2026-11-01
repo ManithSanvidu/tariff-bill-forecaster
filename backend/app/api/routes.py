@@ -53,10 +53,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize singletons
-tariff_engine = TariffEngine()
-forecaster = MLConsumptionForecaster(tariff_engine=tariff_engine)
-validator = ReadingValidator()
+# Lazy singletons to ensure fast, failure-proof serverless cold starts
+_tariff_engine = None
+_forecaster = None
+_validator = None
+
+
+def get_tariff_engine():
+    global _tariff_engine
+    if _tariff_engine is None:
+        _tariff_engine = TariffEngine()
+    return _tariff_engine
+
+
+def get_forecaster():
+    global _forecaster
+    if _forecaster is None:
+        _forecaster = MLConsumptionForecaster(tariff_engine=get_tariff_engine())
+    return _forecaster
+
+
+class _LazyProxy:
+    def __init__(self, getter):
+        self._getter = getter
+
+    def __getattr__(self, name):
+        return getattr(self._getter(), name)
+
+
+tariff_engine = _LazyProxy(get_tariff_engine)
+forecaster = _LazyProxy(get_forecaster)
+validator = _LazyProxy(get_validator)
 
 # Safely initialize DB tables on startup (does not crash lambda if DB is cold/unconfigured)
 try:
