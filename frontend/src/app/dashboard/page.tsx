@@ -356,44 +356,47 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-4 sm:p-8 flex items-center justify-center font-sans">
-      {/* Outer macOS Window Frame */}
-      <div className="w-full max-w-5xl mac-window rounded-2xl overflow-hidden shadow-2xl border border-white/60">
+    <main className="min-h-screen p-4 sm:p-8 flex items-center justify-center font-sans hero-scenic-backdrop">
+      {/* Outer macOS Dock Window Frame */}
+      <div className="w-full max-w-5xl apple-dock-card overflow-hidden shadow-2xl relative">
 
-        {/* macOS Title Bar */}
-        <div className="bg-[#fcfbfe]/90 backdrop-blur-md px-4 py-3 border-b border-gray-200/80 flex items-center justify-between select-none">
+        {/* macOS Dock Title Bar */}
+        <div className="bg-white/60 backdrop-blur-md px-5 py-3 border-b border-black/[0.06] flex items-center justify-between select-none">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-semibold text-gray-500 tracking-wider uppercase">
+            <div className="w-6 h-6 rounded-lg bg-black text-white flex items-center justify-center text-xs font-bold">
+              <Zap className="w-3.5 h-3.5 fill-white" />
+            </div>
+            <span className="text-xs font-bold text-black tracking-tight uppercase">
               {t.utilityArbitrage}
             </span>
           </div>
 
           <div className="flex items-center space-x-3">
             {/* Utility Selector */}
-            <div className="bg-gray-200/70 p-0.5 rounded-lg flex text-xs font-medium">
+            <div className="bg-black/5 p-0.5 rounded-full flex text-xs font-medium">
               <button
                 onClick={() => setUtility("electricity")}
-                className={`px-3 py-1 rounded-md flex items-center space-x-1 transition-all ${
-                  utility === "electricity" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+                className={`px-3 py-1 rounded-full flex items-center space-x-1 transition-all ${
+                  utility === "electricity" ? "bg-white text-black shadow-sm font-bold" : "text-gray-500 hover:text-black"
                 }`}
               >
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
+                <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
                 <span>{t.electricity}</span>
               </button>
               <button
                 onClick={() => setUtility("water")}
-                className={`px-3 py-1 rounded-md flex items-center space-x-1 transition-all ${
-                  utility === "water" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
+                className={`px-3 py-1 rounded-full flex items-center space-x-1 transition-all ${
+                  utility === "water" ? "bg-white text-black shadow-sm font-bold" : "text-gray-500 hover:text-black"
                 }`}
               >
-                <Droplets className="w-3.5 h-3.5 text-blue-500" />
+                <Droplets className="w-3 h-3 text-blue-500" />
                 <span>{t.water}</span>
               </button>
             </div>
 
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-3 py-1.5 rounded-lg bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-semibold shadow-sm flex items-center space-x-1 transition-colors"
+              className="apple-btn-black px-3.5 py-1.5 text-xs flex items-center space-x-1.5 shadow-sm"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>{t.addReading}</span>
@@ -402,18 +405,18 @@ export default function Home() {
         </div>
 
         {/* User / Household Profile Header */}
-        <div className="p-6 bg-white border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#5865F2] to-indigo-400 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+        <div className="p-6 bg-white/70 border-b border-black/[0.06] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center font-bold text-sm shadow-sm">
               LK
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-base font-bold text-gray-900">{t.household}: {householdId}</h1>
-                <span className="text-[11px] font-medium bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full border border-purple-100">
+                <h1 className="text-base font-extrabold text-black">{t.household}: {householdId}</h1>
+                <span className="text-[11px] font-semibold bg-black/5 text-black px-2.5 py-0.5 rounded-full border border-black/10">
                   {currentUser?.district || "Colombo"} ({currentUser?.provider || "CEB"})
                 </span>
-                <span className="text-[11px] font-bold uppercase bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full border border-indigo-100">
+                <span className="text-[11px] font-bold uppercase bg-black text-white px-2.5 py-0.5 rounded-full">
                   {language === "si" ? "සිංහල" : language === "ta" ? "தமிழ்" : "English"}
                 </span>
               </div>
@@ -425,36 +428,36 @@ export default function Home() {
 
           <div className="flex items-center space-x-2">
             {currentUser && (
-              <span className="hidden sm:inline-block text-xs font-semibold text-gray-500 bg-gray-50 border border-gray-200 px-2.5 py-1.5 rounded-lg">
+              <span className="hidden sm:inline-block text-xs font-semibold text-gray-700 bg-black/5 border border-black/10 px-3 py-1.5 rounded-full">
                 {currentUser.name}
               </span>
             )}
             <Link
               href="/"
-              className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-xs font-medium text-gray-700 shadow-sm transition"
+              className="px-3.5 py-1.5 rounded-full border border-black/10 bg-white hover:bg-black/5 text-xs font-semibold text-black shadow-sm transition"
             >
               {t.backToHome}
             </Link>
             <button
               onClick={fetchData}
               disabled={loading}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-xs font-medium text-gray-700 flex items-center space-x-1.5 shadow-sm transition"
+              className="px-3.5 py-1.5 rounded-full border border-black/10 bg-white hover:bg-black/5 text-xs font-semibold text-black flex items-center space-x-1.5 shadow-sm transition"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-gray-500 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-black ${loading ? "animate-spin" : ""}`} />
               <span>{t.refresh}</span>
             </button>
             <button
               onClick={() => setActiveTab(activeTab === "settings" ? "dashboard" : "settings")}
-              className={`p-1.5 rounded-lg border border-gray-200 ${
-                activeTab === "settings" ? "bg-indigo-50 border-indigo-300 text-[#5865F2]" : "bg-white hover:bg-gray-50 text-gray-600"
+              className={`p-2 rounded-full border ${
+                activeTab === "settings" ? "bg-black text-white border-black" : "border-black/10 bg-white hover:bg-black/5 text-black"
               } shadow-sm transition`}
               title="Preferences & Localization"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => handleLogout(false)}
-              className="px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition"
+              className="px-3.5 py-1.5 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold shadow-sm flex items-center space-x-1.5 transition"
               title={t.logoutBtn}
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -465,26 +468,26 @@ export default function Home() {
 
         {/* Weekend Reading Reminder Banner */}
         {reminderToast && (
-          <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-amber-50 border-b border-indigo-100 px-6 py-3 flex items-center justify-between text-xs text-indigo-950 animate-fadeIn">
+          <div className="bg-amber-50/90 border-b border-amber-200/80 px-6 py-3 flex items-center justify-between text-xs text-amber-950">
             <div className="flex items-center space-x-3">
-              <div className="w-7 h-7 rounded-lg bg-[#5865F2] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Bell className="w-4 h-4 text-amber-300 animate-bounce" />
+              <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Bell className="w-3.5 h-3.5 text-amber-300" />
               </div>
               <div>
-                <span className="font-extrabold text-indigo-900 block">{t.reminderNoticeActive}</span>
+                <span className="font-extrabold text-black block">{t.reminderNoticeActive}</span>
                 <span className="text-gray-700">{reminderToast}</span>
               </div>
             </div>
             <div className="flex items-center space-x-2 ml-4">
               <button
                 onClick={() => setIsAddModalOpen(true)}
-                className="px-3 py-1 bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold rounded-lg text-xs shadow-sm transition"
+                className="apple-btn-black px-3.5 py-1 text-xs"
               >
                 {t.addReading}
               </button>
               <button
                 onClick={handleDismissReminder}
-                className="text-xs text-gray-400 hover:text-gray-700 px-2 py-1"
+                className="text-xs text-gray-500 hover:text-black px-2 py-1"
               >
                 {t.dismissNotice}
               </button>
@@ -494,16 +497,16 @@ export default function Home() {
 
         {/* Unverified Tariff Limitation Banner */}
         {projection?.tariff_meta && !projection.tariff_meta.verified && (
-          <div className="bg-amber-50/80 border-b border-amber-200/80 px-6 py-2.5 flex items-center justify-between text-xs text-amber-900">
+          <div className="bg-gray-100/80 border-b border-black/[0.06] px-6 py-2.5 flex items-center justify-between text-xs text-gray-800">
             <div className="flex items-center space-x-2">
-              <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <ShieldAlert className="w-4 h-4 text-black flex-shrink-0" />
               <span>{t.limitationNotice}</span>
             </div>
             <a
               href="https://www.pucsl.gov.lk/electricity/tariff/domestic/"
               target="_blank"
               rel="noreferrer"
-              className="underline font-semibold flex items-center space-x-1 text-amber-800 hover:text-amber-950 ml-2"
+              className="underline font-semibold flex items-center space-x-1 text-black hover:opacity-80 ml-2"
             >
               <span>{t.pucslSchedule}</span>
               <ExternalLink className="w-3 h-3" />
@@ -512,74 +515,74 @@ export default function Home() {
         )}
 
         {/* Tab Navigation Pill Bar */}
-        <div className="px-6 pt-4 pb-2 bg-white flex space-x-2 border-b border-gray-100 text-xs font-semibold">
+        <div className="px-6 py-3 bg-white/50 border-b border-black/[0.06] flex space-x-2 text-xs font-semibold">
           <button
             onClick={() => setActiveTab("dashboard")}
-            className={`pb-2 px-3 border-b-2 transition ${
+            className={`px-4 py-1.5 rounded-full transition ${
               activeTab === "dashboard"
-                ? "border-[#5865F2] text-[#5865F2]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-black text-white shadow-sm"
+                : "text-gray-600 hover:text-black"
             }`}
           >
             {t.tabForecaster}
           </button>
           <button
             onClick={() => setActiveTab("trends")}
-            className={`pb-2 px-3 border-b-2 transition ${
+            className={`px-4 py-1.5 rounded-full transition ${
               activeTab === "trends"
-                ? "border-[#5865F2] text-[#5865F2]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-black text-white shadow-sm"
+                : "text-gray-600 hover:text-black"
             }`}
           >
             {t.tabTrends}
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className={`pb-2 px-3 border-b-2 transition flex items-center space-x-1.5 ${
+            className={`px-4 py-1.5 rounded-full transition flex items-center space-x-1.5 ${
               activeTab === "settings"
-                ? "border-[#5865F2] text-[#5865F2]"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                ? "bg-black text-white shadow-sm"
+                : "text-gray-600 hover:text-black"
             }`}
           >
             <span>{t.tabPreferences}</span>
-            {weeklyReminder && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            {weeklyReminder && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
           </button>
         </div>
 
         {/* Main Body Content */}
-        <div className="p-6 bg-[#faf9fc]/70 space-y-6">
+        <div className="p-6 bg-white/40 space-y-6">
 
           {/* TAB 1: DASHBOARD */}
           {activeTab === "dashboard" && (
             <>
               {/* Anti-Slab Alert Card */}
               {alerts && alerts.length > 0 && (
-                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5 shadow-sm">
-                  <div className="flex items-start space-x-3.5">
-                    <div className="p-2.5 bg-amber-500 text-white rounded-xl shadow-md">
-                      <AlertTriangle className="w-5 h-5" />
+                <div className="bg-black text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-400 text-black flex items-center justify-center font-bold flex-shrink-0 shadow-md">
+                      <AlertTriangle className="w-5 h-5 fill-black" />
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300 bg-white/10 px-3 py-0.5 rounded-full">
                           {t.antiSlabAlertTitle}: {alerts[0].target_slab} Units Boundary
                         </span>
-                        <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                        <span className="text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-0.5 rounded-full">
                           {t.potentialSaving}: Rs. {alerts[0].potential_saving_lkr.toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-sm font-medium text-gray-900 mt-2 leading-relaxed">
+                      <p className="text-sm sm:text-base font-semibold text-white mt-2.5 leading-relaxed">
                         {alerts[0].message}
                       </p>
-                      <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-600">
-                        <span className="bg-white/80 px-2.5 py-1 rounded-md border border-amber-200 font-medium">
-                          {t.remainingDays}: <strong>{alerts[0].remaining_days} {t.days}</strong>
+                      <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                        <span className="bg-white/10 px-3 py-1 rounded-full text-gray-200">
+                          {t.remainingDays}: <strong className="text-white">{alerts[0].remaining_days} {t.days}</strong>
                         </span>
-                        <span className="bg-white/80 px-2.5 py-1 rounded-md border border-amber-200 font-medium">
-                          {t.dailyCutNeeded}: <strong>{alerts[0].required_daily_reduction_units} units/day</strong>
+                        <span className="bg-white/10 px-3 py-1 rounded-full text-gray-200">
+                          {t.dailyCutNeeded}: <strong className="text-white">{alerts[0].required_daily_reduction_units} units/day</strong>
                         </span>
-                        <span className="bg-white/80 px-2.5 py-1 rounded-md border border-amber-200 font-medium">
-                          {t.crossingConfidence}: <strong>{(alerts[0].crossing_probability * 100).toFixed(0)}%</strong>
+                        <span className="bg-white/10 px-3 py-1 rounded-full text-gray-200">
+                          {t.crossingConfidence}: <strong className="text-white">{(alerts[0].crossing_probability * 100).toFixed(0)}%</strong>
                         </span>
                       </div>
                     </div>
@@ -591,90 +594,90 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
                 {/* 1. Month-End Units Prediction Card */}
-                <div className="bg-white p-5 rounded-xl border border-gray-200/80 shadow-sm hover:shadow-md transition">
-                  <div className="flex items-center justify-between text-gray-500 text-xs font-semibold">
-                    <span>{t.projectedMonthEndUnits}</span>
-                    <Zap className="w-4 h-4 text-[#5865F2]" />
+                <div className="apple-dock-card p-6 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-gray-400 text-xs font-semibold">
+                    <span className="uppercase tracking-wider text-[11px] text-gray-500">{t.projectedMonthEndUnits}</span>
+                    <Zap className="w-4 h-4 text-black fill-black" />
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+                    <span className="text-3xl font-black text-black tracking-tight">
                       {Math.round(projection?.projection.units_low ?? 58)} to {Math.round(projection?.projection.units_high ?? 71)}
                     </span>
-                    <span className="text-xs font-medium text-gray-500">{t.unitsKwh}</span>
+                    <span className="text-xs font-semibold text-gray-500">{t.unitsKwh}</span>
                   </div>
-                  <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex items-center justify-between">
+                  <div className="mt-3 text-xs text-gray-600 bg-black/5 p-2.5 rounded-xl flex items-center justify-between">
                     <span>
                       <span className="font-semibold text-gray-700">Likely Median:</span>{" "}
-                      <strong>{projection?.projection.units_likely ?? "64.0"} kWh</strong>
+                      <strong className="text-black">{projection?.projection.units_likely ?? "64.0"} kWh</strong>
                     </span>
-                    <span className="text-[11px] text-[#5865F2] font-semibold">80% Interval</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-black bg-white px-2 py-0.5 rounded-md shadow-2xs">80% Interval</span>
                   </div>
                 </div>
 
                 {/* 2. Projected Month-End Bill Card (Deterministic Tariff Engine) */}
-                <div className="bg-white p-5 rounded-xl border border-gray-200/80 shadow-sm hover:shadow-md transition">
-                  <div className="flex items-center justify-between text-gray-500 text-xs font-semibold">
-                    <span>{t.projectedBill}</span>
+                <div className="apple-dock-card p-6 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-gray-400 text-xs font-semibold">
+                    <span className="uppercase tracking-wider text-[11px] text-gray-500">{t.projectedBill}</span>
                     <TrendingUp className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
-                    <span className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+                    <span className="text-2xl sm:text-3xl font-black text-black tracking-tight">
                       Rs. {Math.round(projection?.projection.bill_low_lkr ?? 1580).toLocaleString()} – Rs. {Math.round(projection?.projection.bill_high_lkr ?? 3450).toLocaleString()}
                     </span>
                   </div>
-                  <div className="mt-2 text-xs text-gray-600 bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100/80 flex items-center justify-between">
+                  <div className="mt-3 text-xs text-emerald-900 bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-200/80 flex items-center justify-between">
                     <span>
-                      <span className="font-semibold text-emerald-950">Likely Bill:</span>{" "}
+                      <span className="font-semibold">Likely Bill:</span>{" "}
                       <strong>Rs. {projection?.projection.bill_likely_lkr.toLocaleString() ?? "3,180"}</strong>
                     </span>
-                    <span className="text-[11px] text-emerald-700 font-bold uppercase tracking-wider">Deterministic Rule Matrix</span>
+                    <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider bg-white px-2 py-0.5 rounded-md">Deterministic</span>
                   </div>
                 </div>
 
                 {/* 3. Cycle Progress & Run-rate */}
-                <div className="bg-white p-5 rounded-xl border border-gray-200/80 shadow-sm">
-                  <div className="flex items-center justify-between text-gray-500 text-xs font-semibold">
-                    <span>{t.cycleElapsed}</span>
-                    <Calendar className="w-4 h-4 text-indigo-500" />
+                <div className="apple-dock-card p-6 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-gray-400 text-xs font-semibold">
+                    <span className="uppercase tracking-wider text-[11px] text-gray-500">{t.cycleElapsed}</span>
+                    <Calendar className="w-4 h-4 text-black" />
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
-                    <span className="text-3xl font-extrabold text-gray-900">
+                    <span className="text-3xl font-black text-black tracking-tight">
                       {projection?.days_elapsed ?? 14}
                     </span>
-                    <span className="text-xs font-medium text-gray-500">
+                    <span className="text-xs font-semibold text-gray-500">
                       / 30 {t.days} ({projection?.remaining_days ?? 16} {t.daysLeft})
                     </span>
                   </div>
-                  <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                  <div className="mt-3 text-xs text-gray-600 bg-black/5 p-2 rounded-xl">
                     <span className="font-semibold text-gray-700">{t.recordedToDate}:</span>{" "}
-                    {projection?.units_so_far ?? 41.5} units
+                    <strong className="text-black">{projection?.units_so_far ?? 41.5} units</strong>
                   </div>
                 </div>
               </div>
 
               {/* Progress to Next Slab Boundary */}
-              <div className="bg-white p-5 rounded-xl border border-gray-200/80 shadow-sm">
+              <div className="apple-dock-card p-6">
                 <div className="flex items-center justify-between mb-2 text-xs">
-                  <span className="font-bold text-gray-700">
+                  <span className="font-bold text-black">
                     {t.tariffSlabLevel}: {projection?.slab_status.current_slab ?? 60} Units
                   </span>
                   <span className="font-semibold text-gray-500">
                     {t.approachingThreshold}: {projection?.slab_status.next_slab ?? 90} Units
                   </span>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-black/5 rounded-full h-3 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       (projection?.slab_status.progress_percent ?? 50) > 75
                         ? "bg-amber-500"
-                        : "bg-[#5865F2]"
+                        : "bg-black"
                     }`}
                     style={{ width: `${projection?.slab_status.progress_percent ?? 50}%` }}
                   />
                 </div>
                 <div className="flex justify-between items-center mt-2 text-[11px] text-gray-500">
                   <span>0 Units</span>
-                  <span className="font-medium text-amber-700">
+                  <span className="font-semibold text-black">
                     {projection?.slab_status.progress_percent ?? 50}% {t.ofCurrentBlockConsumed}
                   </span>
                   <span>180+ Units</span>
@@ -682,32 +685,32 @@ export default function Home() {
               </div>
 
               {/* Disaggregation Card: Baseline vs Weather Driven */}
-              <div className="bg-white p-5 rounded-xl border border-gray-200/80 shadow-sm">
-                <div className="flex items-center space-x-2 mb-3">
-                  <CloudSun className="w-4 h-4 text-amber-500" />
-                  <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
+              <div className="apple-dock-card p-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <CloudSun className="w-4 h-4 text-black" />
+                  <h3 className="text-xs font-bold text-black uppercase tracking-wider">
                     {t.consumptionDisaggregation}
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="text-gray-500 block">{t.baselineHouseholdLoad}</span>
-                    <span className="text-xl font-bold text-gray-900 mt-1 block">
+                  <div className="p-4 bg-black/5 rounded-2xl border border-black/[0.04]">
+                    <span className="text-gray-500 block font-semibold">{t.baselineHouseholdLoad}</span>
+                    <span className="text-2xl font-black text-black mt-1 block tracking-tight">
                       {projection?.disaggregation.baseline_units ?? 60.0} units
                     </span>
-                    <span className="text-[11px] text-gray-500 mt-1 block">
+                    <span className="text-[11px] text-gray-500 mt-1.5 block leading-normal">
                       {t.baselineDescription}
                     </span>
                   </div>
-                  <div className="p-3.5 bg-amber-50/60 rounded-lg border border-amber-200">
-                    <span className="text-amber-800 font-medium block">{t.weatherDrivenLoad}</span>
-                    <span className="text-xl font-bold text-amber-900 mt-1 block">
+                  <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200">
+                    <span className="text-amber-900 font-semibold block">{t.weatherDrivenLoad}</span>
+                    <span className="text-2xl font-black text-amber-950 mt-1 block tracking-tight">
                       +{projection?.disaggregation.weather_driven_units ?? 4.0} units
                     </span>
-                    <span className="text-[11px] text-amber-800 mt-1 block font-medium">
+                    <span className="text-[11px] text-amber-900 mt-1.5 block font-medium leading-normal">
                       "A hot week ahead is adding about {projection?.disaggregation.weather_driven_units ?? 4.0} units (cooling & fans)."
                     </span>
-                    <span className="text-[10px] text-amber-600/80 block mt-0.5">
+                    <span className="text-[10px] text-amber-700/80 block mt-1">
                       Disaggregated via Open-Meteo CDD (No appliance-level sensors needed).
                     </span>
                   </div>
@@ -718,48 +721,49 @@ export default function Home() {
 
           {/* TAB 2: TRENDS & WEATHER OVERLAY */}
           {activeTab === "trends" && (
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+            <div className="apple-dock-card p-6 sm:p-8 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-gray-900">{t.historicalTrends}</h3>
+                  <h3 className="text-base font-bold text-black">{t.historicalTrends}</h3>
                   <p className="text-xs text-gray-500 mt-0.5">
                     {t.historicalSubtitle}
                   </p>
                 </div>
-                <div className="flex items-center space-x-2 text-xs">
-                  <span className="flex items-center space-x-1 text-indigo-600">
-                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block" />
+                <div className="flex items-center space-x-3 text-xs">
+                  <span className="flex items-center space-x-1.5 text-black font-semibold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-black inline-block" />
                     <span>{t.unitsLabel}</span>
                   </span>
-                  <span className="flex items-center space-x-1 text-amber-500">
+                  <span className="flex items-center space-x-1.5 text-amber-500 font-semibold">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
                     <span>{t.tempLabel}</span>
                   </span>
                 </div>
               </div>
 
-              <div className="h-64 w-full">
+              <div className="h-64 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trends}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0edf5" />
                     <XAxis dataKey="cycle" stroke="#9ca3af" fontSize={11} />
-                    <YAxis yAxisId="left" stroke="#5865F2" fontSize={11} domain={[40, 80]} />
+                    <YAxis yAxisId="left" stroke="#000000" fontSize={11} domain={[40, 80]} />
                     <YAxis yAxisId="right" orientation="right" stroke="#f59e0b" fontSize={11} domain={[25, 35]} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "#ffffff",
-                        borderRadius: "8px",
-                        border: "1px solid #e5e0ea",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(0,0,0,0.08)",
                         fontSize: "12px",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.1)"
                       }}
                     />
                     <Line
                       yAxisId="left"
                       type="monotone"
                       dataKey="units"
-                      stroke="#5865F2"
+                      stroke="#000000"
                       strokeWidth={2.5}
-                      dot={{ r: 4 }}
+                      dot={{ r: 4, fill: "#000000" }}
                       name="Units (kWh)"
                     />
                     <Line
@@ -769,7 +773,7 @@ export default function Home() {
                       stroke="#f59e0b"
                       strokeWidth={2}
                       strokeDasharray="4 4"
-                      dot={{ r: 3 }}
+                      dot={{ r: 3, fill: "#f59e0b" }}
                       name="Mean Temp (°C)"
                     />
                   </LineChart>
@@ -780,16 +784,16 @@ export default function Home() {
 
           {/* TAB 3: SETTINGS & I18N */}
           {activeTab === "settings" && (
-            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-8">
-              <div className="flex items-center justify-between border-b pb-4">
+            <div className="apple-dock-card p-6 sm:p-8 space-y-6">
+              <div className="flex items-center justify-between border-b border-black/[0.06] pb-4">
                 <div>
-                  <h3 className="text-base font-extrabold text-gray-900">{t.appPreferences}</h3>
+                  <h3 className="text-base font-extrabold text-black">{t.appPreferences}</h3>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Customize reminders, localization, and automated notification triggers
                   </p>
                 </div>
                 {settingsFeedback && (
-                  <div className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-1.5 animate-fadeIn">
+                  <div className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center space-x-1.5 animate-fadeIn">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     <span>{settingsFeedback}</span>
                   </div>
@@ -797,14 +801,14 @@ export default function Home() {
               </div>
 
               {/* SETTING 1: WEEKLY REMINDER NOTIFICATIONS */}
-              <div className="p-5 rounded-2xl bg-[#faf9fc] border border-gray-200/80 space-y-4">
+              <div className="p-5 rounded-2xl bg-black/5 border border-black/[0.04] space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-100 text-[#5865F2] flex items-center justify-center">
-                        <Bell className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center">
+                        <Bell className="w-4 h-4 text-amber-300" />
                       </div>
-                      <h4 className="text-sm font-bold text-gray-900">{t.weeklyReminderTitle}</h4>
+                      <h4 className="text-sm font-bold text-black">{t.weeklyReminderTitle}</h4>
                     </div>
                     <p className="text-xs text-gray-600 max-w-lg mt-1">
                       {t.weeklyReminderDesc}
@@ -816,7 +820,7 @@ export default function Home() {
                     aria-checked={weeklyReminder}
                     onClick={handleToggleWeeklyReminder}
                     className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-0.5 ${
-                      weeklyReminder ? "bg-[#5865F2]" : "bg-gray-300"
+                      weeklyReminder ? "bg-black" : "bg-gray-300"
                     }`}
                   >
                     <span
@@ -827,7 +831,7 @@ export default function Home() {
                   </button>
                 </div>
 
-                <div className="pt-3 border-t border-gray-200/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="pt-3 border-t border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs">
                   <div className="flex items-center space-x-2 text-gray-600">
                     <span className={`w-2 h-2 rounded-full ${weeklyReminder ? "bg-emerald-500" : "bg-gray-400"}`} />
                     <span>{weeklyReminder ? t.weeklyReminderStatusOn : t.weeklyReminderStatusOff}</span>
@@ -837,10 +841,10 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setIsWeekendSimulated(!isWeekendSimulated)}
-                      className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${
+                      className={`px-3.5 py-1.5 rounded-full border text-xs font-semibold transition ${
                         isWeekendSimulated
                           ? "bg-amber-100 text-amber-900 border-amber-300"
-                          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                          : "bg-white text-gray-700 border-black/10 hover:bg-gray-50"
                       }`}
                       title="Simulate weekend condition to test banner reminder"
                     >
@@ -850,7 +854,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={handleSendTestNotification}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold shadow-sm transition"
+                      className="apple-btn-secondary px-3.5 py-1.5 text-xs font-semibold shadow-2xs"
                     >
                       {t.testNotificationBtn}
                     </button>
@@ -859,14 +863,14 @@ export default function Home() {
               </div>
 
               {/* SETTING 2: LANGUAGE SELECTION (ENGLISH, SINHALA, TAMIL) */}
-              <div className="p-5 rounded-2xl bg-[#faf9fc] border border-gray-200/80 space-y-4">
+              <div className="p-5 rounded-2xl bg-black/5 border border-black/[0.04] space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center">
                         <Languages className="w-4 h-4" />
                       </div>
-                      <h4 className="text-sm font-bold text-gray-900">{t.languageTitle}</h4>
+                      <h4 className="text-sm font-bold text-black">{t.languageTitle}</h4>
                     </div>
                     <p className="text-xs text-gray-600">
                       {t.languageDesc}
@@ -884,17 +888,17 @@ export default function Home() {
                       key={item.code}
                       type="button"
                       onClick={() => handleLanguageChange(item.code as Language)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
+                      className={`p-3.5 rounded-2xl border text-left transition-all ${
                         language === item.code
-                          ? "bg-[#5865F2] text-white border-[#5865F2] shadow-md transform -translate-y-0.5"
-                          : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                          ? "bg-black text-white border-black shadow-md"
+                          : "bg-white text-gray-700 border-black/10 hover:bg-gray-50"
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-extrabold text-sm">{item.label}</span>
                         {language === item.code && <Check className="w-4 h-4 text-white" />}
                       </div>
-                      <span className={`text-[11px] block mt-1 ${language === item.code ? "text-indigo-100" : "text-gray-400"}`}>
+                      <span className={`text-[11px] block mt-1 ${language === item.code ? "text-gray-300" : "text-gray-400"}`}>
                         {item.sublabel}
                       </span>
                     </button>
@@ -903,14 +907,14 @@ export default function Home() {
               </div>
 
               {/* SETTING 3: ACCOUNT SESSION & SWITCH HOUSEHOLD */}
-              <div className="p-5 rounded-2xl bg-[#faf9fc] border border-gray-200/80 space-y-4">
+              <div className="p-5 rounded-2xl bg-black/5 border border-black/[0.04] space-y-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-xl bg-red-100 text-red-700 flex items-center justify-center">
                         <LogOut className="w-4 h-4" />
                       </div>
-                      <h4 className="text-sm font-bold text-gray-900">Account Session & Switching</h4>
+                      <h4 className="text-sm font-bold text-black">Account Session & Switching</h4>
                     </div>
                     <p className="text-xs text-gray-600">
                       Logged in as <strong>{currentUser ? currentUser.name : "Household Profile"}</strong> ({currentUser ? currentUser.email : householdId}).
@@ -923,7 +927,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => handleLogout(false)}
-                    className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm flex items-center space-x-2 transition"
+                    className="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm flex items-center space-x-2 transition"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>{t.logoutBtn}</span>
@@ -932,18 +936,18 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => handleLogout(true)}
-                    className="px-4 py-2 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 text-xs font-bold shadow-sm flex items-center space-x-2 transition"
+                    className="apple-btn-secondary px-4 py-2 text-xs font-bold flex items-center space-x-2"
                   >
-                    <UserPlus className="w-4 h-4 text-[#5865F2]" />
+                    <UserPlus className="w-4 h-4 text-black" />
                     <span>{t.switchAccount}</span>
                   </button>
                 </div>
               </div>
 
               {/* Quick Summary Note */}
-              <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-white border border-black/[0.06] text-xs text-gray-600 flex items-center justify-between">
                 <span>All preferences persist across page reloads in your local browser profile.</span>
-                <span className="font-bold text-indigo-700 uppercase tracking-wider text-[11px]">Auto-Synced</span>
+                <span className="font-bold text-black uppercase tracking-wider text-[11px]">Auto-Synced</span>
               </div>
             </div>
           )}
@@ -954,21 +958,24 @@ export default function Home() {
 
       {/* Add Reading Modal (with Mandatory OCR Human Confirmation Step) */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transform transition-all">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-md apple-dock-card shadow-2xl overflow-hidden transform transition-all">
 
             {/* Modal Title Bar */}
-            <div className="bg-[#fbfafc] px-4 py-3 border-b flex items-center justify-between">
+            <div className="bg-white/60 px-5 py-3.5 border-b border-black/[0.06] flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                <div className="w-5 h-5 rounded-md bg-black text-white flex items-center justify-center text-[10px] font-bold">
+                  <Zap className="w-3 h-3 fill-white" />
+                </div>
+                <span className="text-xs font-bold text-black uppercase tracking-tight">
                   {t.recordMeterReading}
                 </span>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="w-7 h-7 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center text-gray-500 hover:text-black transition"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
@@ -976,16 +983,16 @@ export default function Home() {
             <form onSubmit={handleSaveReading} className="p-6 space-y-4">
 
               {addSuccessMessage ? (
-                <div className="p-4 bg-emerald-50 text-emerald-800 rounded-xl text-center flex flex-col items-center">
+                <div className="p-5 bg-emerald-50 text-emerald-900 rounded-2xl text-center flex flex-col items-center border border-emerald-200">
                   <CheckCircle2 className="w-8 h-8 text-emerald-600 mb-2" />
-                  <p className="text-sm font-semibold">{addSuccessMessage}</p>
+                  <p className="text-sm font-bold">{addSuccessMessage}</p>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between pb-2 border-b">
+                  <div className="flex items-center justify-between pb-3 border-b border-black/[0.06]">
                     <span className="text-xs text-gray-500 font-medium">{t.inputMethod}</span>
                     <div className="flex items-center space-x-2">
-                      <label className="cursor-pointer text-xs font-semibold text-[#5865F2] hover:text-[#4752c4] flex items-center space-x-1 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
+                      <label className="cursor-pointer text-xs font-semibold text-black hover:text-gray-700 flex items-center space-x-1.5 bg-black/5 hover:bg-black/10 px-3 py-1.5 rounded-full border border-black/10 transition">
                         <Camera className="w-3.5 h-3.5" />
                         <span>Photograph Meter</span>
                         <input
@@ -999,7 +1006,7 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={handleScanMeter}
-                        className="text-xs text-gray-500 hover:text-gray-800 underline"
+                        className="text-xs text-gray-500 hover:text-black underline"
                       >
                         Demo OCR
                       </button>
@@ -1008,22 +1015,22 @@ export default function Home() {
 
                   {/* OCR Confirmation Notification Step */}
                   {isOcrMode && (
-                    <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 space-y-2">
-                      <p className="font-semibold flex items-center space-x-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+                    <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs text-amber-950 space-y-2">
+                      <p className="font-bold flex items-center space-x-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-amber-600 flex-shrink-0" />
                         <span>{t.ocrCandidateExtracted}: {ocrCandidate}</span>
                       </p>
-                      <p className="text-gray-600 text-[11px]">
+                      <p className="text-amber-900 text-[11px] leading-relaxed">
                         {t.ocrDialInspectPrompt}
                       </p>
-                      <label className="flex items-center space-x-2 mt-1 cursor-pointer">
+                      <label className="flex items-center space-x-2 mt-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={userConfirmedOcr}
                           onChange={(e) => setUserConfirmedOcr(e.target.checked)}
-                          className="rounded text-[#5865F2]"
+                          className="rounded text-black accent-black"
                         />
-                        <span className="text-xs font-bold text-indigo-950">
+                        <span className="text-xs font-bold text-black">
                           {t.ocrConfirmCheckbox}
                         </span>
                       </label>
@@ -1031,7 +1038,7 @@ export default function Home() {
                   )}
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                    <label className="block text-xs font-bold text-black mb-1.5">
                       {t.cumulativeDialReading} ({utility === "electricity" ? "kWh" : "m³"})
                     </label>
                     <input
@@ -1041,12 +1048,12 @@ export default function Home() {
                       placeholder="e.g. 1548.5"
                       value={readingInput}
                       onChange={(e) => setReadingInput(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5865F2]"
+                      className="w-full px-3.5 py-2.5 border border-black/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                    <label className="block text-xs font-bold text-black mb-1.5">
                       {t.readingDateLabel}
                     </label>
                     <input
@@ -1054,21 +1061,21 @@ export default function Home() {
                       required
                       value={readingDate}
                       onChange={(e) => setReadingDate(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#5865F2]"
+                      className="w-full px-3.5 py-2.5 border border-black/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-black bg-white"
                     />
                   </div>
 
-                  <div className="pt-2 flex justify-end space-x-2">
+                  <div className="pt-3 flex justify-end space-x-2">
                     <button
                       type="button"
                       onClick={() => setIsAddModalOpen(false)}
-                      className="px-4 py-2 rounded-lg border text-xs font-medium text-gray-600 hover:bg-gray-50"
+                      className="px-4 py-2 rounded-full border border-black/10 text-xs font-semibold text-gray-600 hover:text-black hover:bg-black/5"
                     >
                       {t.cancelBtn}
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-lg bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md transition"
+                      className="apple-btn-black px-5 py-2 text-xs"
                     >
                       {t.confirmSaveBtn}
                     </button>

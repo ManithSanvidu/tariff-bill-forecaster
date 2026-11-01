@@ -21,7 +21,10 @@ import {
   Clock,
   Compass,
   Cpu,
-  LogOut
+  LogOut,
+  AlertTriangle,
+  Info,
+  CheckCircle2
 } from "lucide-react";
 
 export default function HowItWorksPage() {
@@ -60,367 +63,383 @@ export default function HowItWorksPage() {
   const dailyCutNeeded = remainingDays > 0 ? (excessUnits / remainingDays) : 0;
 
   return (
-    <div id="how-it-works" className="min-h-screen text-gray-900 font-sans selection:bg-[#5865F2] selection:text-white">
-      {/* Background Glows */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[15%] w-[550px] h-[550px] rounded-full bg-purple-300/25 blur-[130px]" />
-        <div className="absolute top-[35%] right-[10%] w-[500px] h-[500px] rounded-full bg-indigo-300/20 blur-[120px]" />
-      </div>
+    <div id="how-it-works" className="min-h-screen text-[#111111] selection:bg-black selection:text-white hero-scenic-backdrop">
+      {/* Top Floating Pill Navigation Bar */}
+      <header className="pt-6 px-4 fixed top-0 left-0 right-0 z-50 flex justify-center">
+        <nav className="apple-pill-nav px-3.5 py-2 flex items-center justify-between gap-6 sm:gap-8 max-w-3xl w-full">
+          <Link href="/" className="flex items-center space-x-2.5 pl-1.5 group">
+            <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">
+              <Zap className="w-4 h-4 fill-white" />
+            </div>
+            <span className="font-bold text-sm tracking-tight text-black">
+              TariffPredict
+            </span>
+          </Link>
 
-      {/* Navigation Bar */}
-      <nav className="sticky top-4 z-40 max-w-5xl mx-auto px-4">
-        <div className="mac-window rounded-2xl px-5 py-3.5 flex items-center justify-between shadow-lg">
-          <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#5865F2] to-indigo-400 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
-                <Zap className="w-4 h-4 text-amber-300" />
-              </div>
-              <span className="font-extrabold text-sm tracking-tight text-gray-900">
-                TariffArbitrage<span className="text-[#5865F2]">.lk</span>
-              </span>
-            </Link>
+          <div className="hidden md:flex items-center space-x-6 text-[13px] font-medium text-gray-600">
+            <Link href="/#features" className="hover:text-black transition-colors">Features</Link>
+            <Link href="/how-it-works" className="text-black font-bold">How It Works</Link>
+            <Link href="/anti-slab" className="hover:text-black transition-colors">Anti-Slab Alert</Link>
+            <a
+              href="https://www.pucsl.gov.lk/electricity/tariff/domestic/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-black transition-colors"
+            >
+              PUCSL Tariffs
+            </a>
           </div>
 
-          <div className="hidden md:flex items-center space-x-6 text-xs font-semibold text-gray-600">
-            <Link href="/#features" className="hover:text-gray-900 transition">Features</Link>
-            <Link href="/how-it-works" className="text-[#5865F2] font-bold">How It Works</Link>
-            <Link href="/anti-slab" className="hover:text-gray-900 transition">Anti-Slab Alert</Link>
-            <a href="https://www.pucsl.gov.lk/electricity/tariff/domestic/" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition">PUCSL Tariffs</a>
-          </div>
-
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-2">
             {currentUser ? (
               <div className="flex items-center space-x-2">
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1.5 transition-all"
+                  className="apple-btn-black px-4 py-1.5 text-xs flex items-center space-x-1.5"
                 >
-                  <span>Dashboard ({currentUser.name})</span>
+                  <span>Dashboard</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold shadow-sm transition"
+                  className="w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-gray-100 flex items-center justify-center text-gray-600 transition"
                   title="Log Out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              <>
+              <div className="flex items-center space-x-2">
                 <Link
                   href="/login"
-                  className="px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white/70 hover:bg-white text-xs font-semibold text-gray-700 shadow-sm transition"
+                  className="hidden sm:inline-block px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-black transition"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3.5 py-1.5 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1 transition"
+                  className="apple-btn-black px-4 py-1.5 text-xs flex items-center space-x-1.5"
                 >
+                  <Zap className="w-3.5 h-3.5 fill-white" />
                   <span>Get Started</span>
-                  <ArrowRight className="w-3 h-3" />
                 </Link>
-              </>
+              </div>
             )}
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {/* Main Content Container */}
-      <main className="max-w-5xl mx-auto px-4 pt-12 pb-24">
+      <main className="max-w-4xl mx-auto px-4 pt-36 pb-24">
         {/* Back Link */}
         <div className="mb-6">
           <Link
             href="/"
-            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center space-x-1.5 text-xs font-semibold text-gray-500 hover:text-black transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Home</span>
           </Link>
         </div>
 
-        {/* Header Hero */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-[#5865F2] text-xs font-bold mb-4">
-            <Cpu className="w-3.5 h-3.5 text-indigo-500" />
-            <span>System Architecture & Prediction Methodology</span>
+        {/* Hero Header */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="apple-kicker justify-center mb-3">
+            <Cpu className="w-4 h-4 text-black" />
+            <span>Architecture & Principles</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-            How TariffArbitrage Works
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-black tracking-tight leading-tight">
+            How TariffPredict Works.
           </h1>
           <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
-            Sri Lankan utility tariffs are non-linear step functions. A 1-unit deviation can cost thousands of rupees.
-            Here is the engineering breakdown of how we predict consumption with zero financial hallucination.
+            Sparse readings meet deterministic financial logic. Here is how we turn weekend snapshots into proactive, tariff-aware household savings.
           </p>
-        </div>
 
-        {/* 3 Core Rules Banner */}
-        <div className="mac-window rounded-2xl p-6 sm:p-8 mb-16 border border-white/80 shadow-lg">
-          <h2 className="text-lg font-extrabold text-gray-900 mb-6 flex items-center space-x-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#5865F2]" />
-            <span>The 3 Guiding Tenets</span>
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100">
-              <div className="w-8 h-8 rounded-lg bg-[#5865F2] text-white flex items-center justify-center font-black text-xs mb-3">
-                1
-              </div>
-              <h3 className="font-bold text-sm text-gray-900">Deterministic Engine Only</h3>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Machine Learning <strong>never</strong> predicts currency (LKR). ML predicts raw kWh or m³ consumption units. Pure deterministic math computes bills.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-100">
-              <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center font-black text-xs mb-3">
-                2
-              </div>
-              <h3 className="font-bold text-sm text-gray-900">Weather Disaggregation</h3>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                We pull hyper-local Sri Lankan weather from Open-Meteo, computing daily Cooling Degree Days (CDD) to isolate AC and refrigeration spikes.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-100">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-black text-xs mb-3">
-                3
-              </div>
-              <h3 className="font-bold text-sm text-gray-900">Mandatory Human Confirmation</h3>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Whether OCR assistance is used or readings are typed manually, every meter state requires explicit user verification before entering the forecasting model.
-              </p>
-            </div>
+          {/* Navigation Sub-Tabs */}
+          <div className="mt-8 inline-flex p-1 rounded-full bg-black/5 border border-black/10">
+            <button
+              onClick={() => setActiveTab("architecture")}
+              className={`px-5 py-1.5 rounded-full text-xs font-semibold transition ${
+                activeTab === "architecture"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              System Architecture
+            </button>
+            <button
+              onClick={() => setActiveTab("workflow")}
+              className={`px-5 py-1.5 rounded-full text-xs font-semibold transition ${
+                activeTab === "workflow"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              Household Routine
+            </button>
+            <button
+              onClick={() => setActiveTab("math")}
+              className={`px-5 py-1.5 rounded-full text-xs font-semibold transition ${
+                activeTab === "math"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-gray-600 hover:text-black"
+              }`}
+            >
+              Anti-Slab Mathematics
+            </button>
           </div>
         </div>
 
-        {/* Step-by-Step Interactive Workflow */}
-        <section className="mb-20">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-extrabold text-gray-900">The 4-Stage Arbitrage Pipeline</h2>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1.5">
-              From dial photo to month-end bill protection in under 500 milliseconds
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Step 1 */}
-            <div className="mac-window rounded-2xl p-5 border border-white/80 shadow-sm relative">
-              <span className="text-[10px] font-black tracking-wider text-indigo-500 uppercase bg-indigo-50 px-2.5 py-0.5 rounded-full inline-block mb-3">
-                Step 01
-              </span>
-              <h4 className="font-bold text-sm text-gray-900">Sparse Dial Capture</h4>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Users capture a weekly meter reading manually or via camera OCR. No expensive IoT hardware or smart plugs needed.
-              </p>
-              <div className="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
-                Input: Timestamp + Dial kWh
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="mac-window rounded-2xl p-5 border border-white/80 shadow-sm relative">
-              <span className="text-[10px] font-black tracking-wider text-[#5865F2] uppercase bg-purple-50 px-2.5 py-0.5 rounded-full inline-block mb-3">
-                Step 02
-              </span>
-              <h4 className="font-bold text-sm text-gray-900">Data Cleansing & CDD</h4>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Cleans negative jumps, meter roll-overs, and correlates past dates with Colombo, Kandy, or Galle district temperature records.
-              </p>
-              <div className="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
-                Enrichment: Open-Meteo CDD
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="mac-window rounded-2xl p-5 border border-white/80 shadow-sm relative">
-              <span className="text-[10px] font-black tracking-wider text-amber-600 uppercase bg-amber-50 px-2.5 py-0.5 rounded-full inline-block mb-3">
-                Step 03
-              </span>
-              <h4 className="font-bold text-sm text-gray-900">ML Unit Regression</h4>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Ridge & Quantile regressors output 80% confidence interval [Low 10%, Likely Median, High 90%] for end-of-cycle units.
-              </p>
-              <div className="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
-                Output: Predicted Total Units
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="mac-window rounded-2xl p-5 border border-white/80 shadow-sm relative">
-              <span className="text-[10px] font-black tracking-wider text-emerald-600 uppercase bg-emerald-50 px-2.5 py-0.5 rounded-full inline-block mb-3">
-                Step 04
-              </span>
-              <h4 className="font-bold text-sm text-gray-900">Deterministic Matrix</h4>
-              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-                Tariff engine feeds predicted units into verified CEB / Water JSON tariff blocks to compute precise rupee bills and Anti-Slab warnings.
-              </p>
-              <div className="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
-                Result: LKR Bill + Daily Cut
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Live Interactive Calculation Simulator */}
-        <section className="mac-window rounded-2xl p-6 sm:p-8 border border-white/80 shadow-xl mb-20">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200/80 pb-6 mb-6">
-            <div>
-              <div className="flex items-center space-x-2 text-indigo-600 text-xs font-bold uppercase tracking-wider mb-1">
-                <Sliders className="w-4 h-4" />
-                <span>Interactive Forecaster Demonstration</span>
-              </div>
-              <h3 className="text-xl font-extrabold text-gray-900">
-                Simulate Mid-Cycle Run-Rate & Daily Target
-              </h3>
-            </div>
-            <div className="px-3 py-1.5 rounded-xl bg-gray-100 text-xs font-semibold text-gray-600">
-              Simulated CEB Domestic Cycle (30 Days)
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Controls */}
-            <div className="space-y-5">
-              <div>
-                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1.5">
-                  <span>Days Elapsed in Current Cycle:</span>
-                  <span className="text-[#5865F2] font-black">{dayElapsed} / 30 Days</span>
-                </div>
-                <input
-                  type="range"
-                  min="3"
-                  max="28"
-                  value={dayElapsed}
-                  onChange={(e) => setDayElapsed(Number(e.target.value))}
-                  className="w-full accent-[#5865F2] cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] text-gray-400 mt-1">
-                  <span>Day 3</span>
-                  <span>{remainingDays} days remaining</span>
-                  <span>Day 28</span>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1.5">
-                  <span>Units Used So Far:</span>
-                  <span className="text-[#5865F2] font-black">{unitsUsed} kWh</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="120"
-                  value={unitsUsed}
-                  onChange={(e) => setUnitsUsed(Number(e.target.value))}
-                  className="w-full accent-[#5865F2] cursor-pointer"
-                />
-                <div className="flex justify-between text-[11px] text-gray-400 mt-1">
-                  <span>5 kWh</span>
-                  <span>Current Pace: {currentDailyRate.toFixed(2)} kWh/day</span>
-                  <span>120 kWh</span>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold text-gray-700 mb-1.5">
-                  <span>Critical Target Slab Threshold:</span>
-                  <span className="text-amber-600 font-black">{targetSlab} Units Threshold</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {[30, 60, 90].map((slab) => (
-                    <button
-                      key={slab}
-                      type="button"
-                      onClick={() => setTargetSlab(slab)}
-                      className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                        targetSlab === slab
-                          ? "bg-[#5865F2] text-white border-[#5865F2] shadow-sm"
-                          : "bg-white/70 text-gray-700 border-gray-200 hover:bg-white"
-                      }`}
-                    >
-                      {slab} Units
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Projection Card */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-amber-50/40 border border-indigo-100 flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Forecaster State
-                </span>
-                <div className="mt-2 flex items-baseline justify-between">
-                  <span className="text-3xl font-black text-gray-900">
-                    {runRateProjection.toFixed(1)} <span className="text-sm font-semibold text-gray-500">kWh</span>
-                  </span>
-                  <span
-                    className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-                      runRateProjection > targetSlab
-                        ? "bg-amber-100 text-amber-800 border-amber-200"
-                        : "bg-emerald-100 text-emerald-800 border-emerald-200"
-                    }`}
-                  >
-                    {runRateProjection > targetSlab ? "Slab Breach Predicted" : "Safe Within Block"}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-600 mt-3 leading-relaxed">
-                  {runRateProjection > targetSlab ? (
-                    <>
-                      You are tracking to exceed your {targetSlab}-unit threshold by{" "}
-                      <strong>{excessUnits.toFixed(1)} units</strong>. To stay below and protect your cheaper rates,
-                      you must reduce your use by <strong>{dailyCutNeeded.toFixed(2)} units/day</strong> for the remaining {remainingDays} days.
-                    </>
-                  ) : (
-                    <>
-                      Excellent! Your current rate of {currentDailyRate.toFixed(2)} kWh/day projects{" "}
-                      <strong>{(targetSlab - runRateProjection).toFixed(1)} units below</strong> the {targetSlab}-unit threshold.
-                    </>
-                  )}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-indigo-100/80 flex items-center justify-between text-xs">
-                <div>
-                  <span className="text-gray-400 block text-[11px]">Remaining Days</span>
-                  <span className="font-bold text-gray-800">{remainingDays} Days</span>
+        {/* TAB 1: ARCHITECTURE */}
+        {activeTab === "architecture" && (
+          <div className="space-y-8">
+            <div className="apple-dock-card p-6 sm:p-8">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center font-bold">
+                  1
                 </div>
                 <div>
-                  <span className="text-gray-400 block text-[11px]">Daily Pace</span>
-                  <span className="font-bold text-gray-800">{currentDailyRate.toFixed(2)} kWh/day</span>
+                  <h3 className="font-extrabold text-lg text-black">The Core Architectural Principle</h3>
+                  <span className="text-xs font-semibold text-gray-500">Separation of Concerns: ML vs Financial Determinism</span>
                 </div>
-                <div>
-                  <span className="text-gray-400 block text-[11px]">Needed Cut</span>
-                  <span className="font-bold text-amber-700">
-                    {dailyCutNeeded > 0 ? `-${dailyCutNeeded.toFixed(2)} u/d` : "0 u/d"}
-                  </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                In most naive AI applications, models are asked to predict the final bill in currency directly. 
+                In utility billing, that is dangerous and leads to hallucinations. Electricity and water tariffs in Sri Lanka are
+                governed by step functions and punitive retroactive thresholds.
+              </p>
+
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl bg-gray-50 border border-black/5">
+                  <div className="flex items-center space-x-2 text-xs font-bold text-gray-800 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span>What Machine Learning Predicts</span>
+                  </div>
+                  <ul className="text-xs text-gray-600 space-y-2 list-disc list-inside">
+                    <li>Projected physical units (kWh / cubic meters)</li>
+                    <li>Likely range boundaries (P10 to P90 uncertainty)</li>
+                    <li>Weather sensitivity (Cooling Degree Days correlation)</li>
+                    <li>Weekend vs weekday run rates</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black text-white">
+                  <div className="flex items-center space-x-2 text-xs font-bold text-white mb-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    <span>What Deterministic Engines Compute</span>
+                  </div>
+                  <ul className="text-xs text-gray-300 space-y-2 list-disc list-inside">
+                    <li>Step-by-step tariff tier progression</li>
+                    <li>Punitive retroactive rate jumps (e.g. 60 vs 61 units)</li>
+                    <li>Official fixed charges and statutory surcharges</li>
+                    <li>Exact rupee-value savings for cutting 0.2 units/day</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Pipeline Visual Flow */}
+            <div className="apple-dock-card p-6 sm:p-8">
+              <h3 className="font-extrabold text-base text-black mb-6">Four-Stage Prediction Pipeline</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="apple-sub-card p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Stage 01</span>
+                  <h4 className="font-bold text-sm text-black">Sparse Capture</h4>
+                  <p className="text-xs text-gray-500 mt-1">Manual entry or camera OCR with mandatory human confirmation.</p>
+                </div>
+                <div className="apple-sub-card p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Stage 02</span>
+                  <h4 className="font-bold text-sm text-black">Daily Run-Rate</h4>
+                  <p className="text-xs text-gray-500 mt-1">Elapsed consumption normalized by days and localized weather trends.</p>
+                </div>
+                <div className="apple-sub-card p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Stage 03</span>
+                  <h4 className="font-bold text-sm text-black">Tariff Lookup</h4>
+                  <p className="text-xs text-gray-500 mt-1">JSON matrix maps expected units into official PUCSL slabs.</p>
+                </div>
+                <div className="apple-sub-card p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Stage 04</span>
+                  <h4 className="font-bold text-sm text-black">Anti-Slab Alert</h4>
+                  <p className="text-xs text-gray-500 mt-1">Generates exact daily reduction targets if crossing into higher block.</p>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        )}
 
-        {/* CTA Banner */}
-        <div className="text-center rounded-2xl bg-[#5865F2] text-white p-8 sm:p-10 shadow-xl relative overflow-hidden">
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-black tracking-tight">Ready to Take Control of Your Bill?</h3>
-            <p className="mt-2 text-xs sm:text-sm text-indigo-100 leading-relaxed">
-              Create your household profile now, add your first meter dial reading, and start receiving actionable Anti-Slab alerts.
+        {/* TAB 2: WORKFLOW */}
+        {activeTab === "workflow" && (
+          <div className="space-y-6">
+            <div className="apple-dock-card p-6 sm:p-8">
+              <h3 className="font-extrabold text-lg text-black mb-2">A Frictionless Weekend Routine</h3>
+              <p className="text-xs text-gray-600 mb-6">
+                You do not need a smart IoT meter or expensive hardware. The system is designed specifically for sparse, irregular human inputs.
+              </p>
+
+              <div className="space-y-4">
+                <div className="p-4 rounded-2xl bg-white border border-black/[0.08] flex items-start space-x-3.5 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-black">Weekend Reminder Notification</h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Every Saturday morning, a subtle desktop or browser prompt asks for a 10-second meter reading check.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-black/[0.08] flex items-start space-x-3.5 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-black">Type It or Photograph It</h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Type the odometer numbers directly, or take a picture. If using photo OCR, the system highlights the detected digits for your confirmation.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-black/[0.08] flex items-start space-x-3.5 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-black">Instant Forecast & Anti-Slab Advisory</h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      Instantly see where your bill will land at month-end. If you are projected to hit 63 units, it advises: "Cut 0.2 units per day for 15 days to stay at 60 units and save Rs. 1,422."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: MATHEMATICS */}
+        {activeTab === "math" && (
+          <div className="space-y-8">
+            <div className="apple-dock-card p-6 sm:p-8">
+              <h3 className="font-extrabold text-lg text-black mb-2">Interactive Run-Rate & Daily Cut Simulator</h3>
+              <p className="text-xs text-gray-600 mb-6">
+                Drag the sliders below to see exactly how our math detects run-rate deviations and determines the minimum daily cut required.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-5">
+                  <div>
+                    <div className="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                      <span>Days Elapsed into Billing Cycle:</span>
+                      <span className="font-bold text-black">{dayElapsed} / 30 Days</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="3"
+                      max="27"
+                      value={dayElapsed}
+                      onChange={(e) => setDayElapsed(Number(e.target.value))}
+                      className="w-full accent-black cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                      <span>Units Consumed So Far:</span>
+                      <span className="font-bold text-black">{unitsUsed} kWh</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="10"
+                      max="120"
+                      value={unitsUsed}
+                      onChange={(e) => setUnitsUsed(Number(e.target.value))}
+                      className="w-full accent-black cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs font-semibold text-gray-700 mb-1.5">
+                      <span>Target Tariff Slab Limit:</span>
+                      <span className="font-bold text-black">{targetSlab} Units</span>
+                    </div>
+                    <div className="flex space-x-2 mt-1">
+                      {[30, 60, 90].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setTargetSlab(s)}
+                          className={`flex-1 py-1.5 rounded-full text-xs font-bold border transition ${
+                            targetSlab === s
+                              ? "bg-black text-white border-black"
+                              : "bg-white text-gray-700 border-black/10 hover:bg-gray-50"
+                          }`}
+                        >
+                          {s} Units
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Calculation Output Box */}
+                <div className="apple-sub-card p-5 flex flex-col justify-between bg-black text-white">
+                  <div>
+                    <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider block mb-1">
+                      Calculated Run-Rate Analysis
+                    </span>
+                    <div className="text-2xl font-black mt-2">
+                      {runRateProjection.toFixed(1)} <span className="text-xs font-normal text-gray-400">Projected Units</span>
+                    </div>
+                    <p className="text-xs text-gray-300 mt-2 leading-relaxed">
+                      At your current pace of <strong>{currentDailyRate.toFixed(2)} units/day</strong>, you have <strong>{remainingDays} days</strong> remaining in the cycle.
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-white/10">
+                    {excessUnits > 0 ? (
+                      <div className="space-y-1">
+                        <span className="text-xs text-amber-300 font-bold flex items-center gap-1.5">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <span>Will Breach {targetSlab} Slab by {excessUnits.toFixed(1)} Units</span>
+                        </span>
+                        <div className="text-xs text-gray-200">
+                          Required Reduction: <strong className="text-white text-sm">{dailyCutNeeded.toFixed(2)} units/day</strong>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Safely within {targetSlab} slab with {Math.abs(excessUnits).toFixed(1)} units buffer</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* CTA Card */}
+        <div className="mt-14 p-8 rounded-3xl bg-black text-white text-center shadow-xl relative overflow-hidden">
+          <div className="max-w-xl mx-auto">
+            <h3 className="text-2xl font-black tracking-tight">Ready to verify your household?</h3>
+            <p className="mt-2 text-xs sm:text-sm text-gray-300 leading-relaxed">
+              Log your initial meter reading now and receive an instant month-end consumption range and Anti-Slab advisory.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/register"
-                className="px-6 py-2.5 rounded-xl bg-white text-[#5865F2] text-xs font-bold hover:bg-gray-100 shadow-md transition"
+                className="px-6 py-2.5 rounded-full bg-white text-black text-xs font-bold hover:bg-gray-100 transition shadow-md"
               >
-                Register Household
+                Create Account
               </Link>
               <Link
                 href="/anti-slab"
-                className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold border border-indigo-400/40 transition"
+                className="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition"
               >
-                Learn About Anti-Slab Alerts
+                Learn Anti-Slab Alerts
               </Link>
             </div>
           </div>
@@ -428,13 +447,13 @@ export default function HowItWorksPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200/70 py-8 px-4 text-center text-xs text-gray-500 max-w-5xl mx-auto">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <p>© 2026 Tiered Utility Tariff Arbitrage & Disaggregation Predictor.</p>
-          <div className="flex space-x-4">
-            <Link href="/" className="hover:text-gray-900 font-medium">Home</Link>
-            <Link href="/anti-slab" className="hover:text-gray-900 font-medium">Anti-Slab Alert</Link>
-            <Link href="/dashboard" className="hover:text-gray-900 font-medium">Dashboard</Link>
+      <footer className="border-t border-black/[0.06] py-10 px-4 text-center text-xs text-gray-500 max-w-4xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© 2026 TariffPredict LK • Deterministic Sri Lankan Utility Engine.</p>
+          <div className="flex space-x-5 font-medium text-gray-600">
+            <Link href="/" className="hover:text-black transition">Home</Link>
+            <Link href="/anti-slab" className="hover:text-black transition">Anti-Slab Alert</Link>
+            <Link href="/dashboard" className="hover:text-black transition">Dashboard</Link>
           </div>
         </div>
       </footer>

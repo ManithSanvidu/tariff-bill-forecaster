@@ -5,20 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Zap,
-  Droplets,
-  AlertTriangle,
-  TrendingUp,
+  ArrowRight,
   ShieldCheck,
   Camera,
-  ArrowRight,
-  Sparkles,
-  BarChart3,
-  Calendar,
-  CloudSun,
   Layers,
   ChevronRight,
-  UserCheck,
-  LogOut
+  LogOut,
+  Sliders,
+  CloudSun,
+  Activity,
+  Sparkles,
+  Search,
+  Wifi,
+  Clock
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -45,203 +44,293 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen text-gray-900 font-sans selection:bg-[#5865F2] selection:text-white">
-      {/* Background Glows */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[-15%] left-[20%] w-[500px] h-[500px] rounded-full bg-purple-300/30 blur-[120px]" />
-        <div className="absolute top-[30%] right-[10%] w-[450px] h-[450px] rounded-full bg-indigo-300/25 blur-[100px]" />
-      </div>
-
-      {/* Navigation Bar in macOS Glassmorphism Style */}
-      <nav className="sticky top-4 z-40 max-w-5xl mx-auto px-4">
-        <div className="mac-window rounded-2xl px-5 py-3.5 flex items-center justify-between shadow-lg">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#5865F2] to-indigo-400 flex items-center justify-center text-white shadow-sm">
-                <Zap className="w-4 h-4 text-amber-300" />
-              </div>
-              <span className="font-extrabold text-sm tracking-tight text-gray-900">
-                TariffArbitrage<span className="text-[#5865F2]">.lk</span>
-              </span>
+    <div className="min-h-screen text-[#111111] selection:bg-black selection:text-white relative overflow-x-hidden hero-scenic-backdrop">
+      {/* Top Floating Pill Navigation Bar */}
+      <header className="pt-6 px-4 fixed top-0 left-0 right-0 z-50 flex justify-center">
+        <nav className="apple-pill-nav px-3.5 py-2 flex items-center justify-between gap-6 sm:gap-8 max-w-3xl w-full">
+          {/* Brand Logo & Name */}
+          <Link href="/" className="flex items-center space-x-2.5 pl-1.5 group">
+            <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">
+              <Zap className="w-4 h-4 fill-white" />
             </div>
+            <span className="font-bold text-sm tracking-tight text-black">
+              TariffPredict
+            </span>
+          </Link>
+
+          {/* Center Links */}
+          <div className="hidden md:flex items-center space-x-6 text-[13px] font-medium text-gray-600">
+            <a href="#features" className="hover:text-black transition-colors">Features</a>
+            <Link href="/how-it-works" className="hover:text-black transition-colors">How It Works</Link>
+            <Link href="/anti-slab" className="hover:text-black transition-colors">Anti-Slab Alert</Link>
+            <a
+              href="https://www.pucsl.gov.lk/electricity/tariff/domestic/"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-black transition-colors"
+            >
+              PUCSL Tariffs
+            </a>
           </div>
 
-          <div className="hidden md:flex items-center space-x-6 text-xs font-semibold text-gray-600">
-            <a href="#features" className="hover:text-gray-900 transition">Features</a>
-            <Link href="/how-it-works" className="hover:text-gray-900 transition">How It Works</Link>
-            <Link href="/anti-slab" className="hover:text-gray-900 transition">Anti-Slab Alert</Link>
-            <a href="https://www.pucsl.gov.lk/electricity/tariff/domestic/" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition">PUCSL Tariffs</a>
-          </div>
-
-          <div className="flex items-center space-x-2.5">
+          {/* Right Action Button */}
+          <div className="flex items-center space-x-2">
             {currentUser ? (
               <div className="flex items-center space-x-2">
                 <Link
                   href="/dashboard"
-                  className="px-4 py-2 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1.5 transition-all"
+                  className="apple-btn-black px-4 py-1.5 text-xs flex items-center space-x-1.5"
                 >
-                  <span>Dashboard ({currentUser.name})</span>
+                  <span>Dashboard</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold shadow-sm transition"
+                  className="w-8 h-8 rounded-full border border-gray-200 bg-white/80 hover:bg-gray-100 flex items-center justify-center text-gray-600 transition"
                   title="Log Out"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
-              <>
+              <div className="flex items-center space-x-2">
                 <Link
                   href="/login"
-                  className="px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white/70 hover:bg-white text-xs font-semibold text-gray-700 shadow-sm transition"
+                  className="hidden sm:inline-block px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-black transition"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3.5 py-1.5 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1 transition"
+                  className="apple-btn-black px-4 py-1.5 text-xs flex items-center space-x-1.5"
                 >
+                  <Zap className="w-3.5 h-3.5 fill-white" />
                   <span>Get Started</span>
-                  <ArrowRight className="w-3 h-3" />
                 </Link>
-              </>
+              </div>
             )}
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       {/* Hero Section */}
-      <section className="pt-16 pb-20 px-4 max-w-5xl mx-auto text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-[#5865F2] text-xs font-bold mb-6">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Designed for Sri Lankan Households • CEB & NWSDB Compatible</span>
+      <section className="pt-36 sm:pt-40 pb-16 px-4 max-w-4xl mx-auto text-center">
+        {/* Kicker badge */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 border border-black/10 shadow-sm text-xs font-semibold text-black mb-6">
+          <Zap className="w-3.5 h-3.5 fill-black" />
+          <span>Your smart utility tariff safeguard</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-[1.15] max-w-3xl mx-auto">
-          Predict your month-end bill. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5865F2] via-indigo-600 to-purple-600">
-            Never cross a costly tariff slab.
-          </span>
+        {/* Hero Title */}
+        <h1 className="apple-hero-title max-w-3xl mx-auto mb-6">
+          A useful predictor <br />
+          for tiered bills.
         </h1>
 
-        <p className="mt-5 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          In Sri Lanka, using just <strong>1 extra unit</strong> can jump your electricity bill by over <strong>Rs. 1,400</strong>. 
-          Our ML forecaster tracks sparse meter readings and issues an Anti-Slab Alert before you cross expensive tier boundaries.
+        {/* Hero Subtitle */}
+        <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto leading-relaxed mb-8">
+          TariffPredict brings sparse meter tracking, forward-looking run-rate forecasts,
+          weather disaggregation, and timely Anti-Slab Alerts right before expensive billing cycle cliffs.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        {/* Hero CTA Button */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
           <Link
             href="/register"
-            className="px-6 py-3 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-sm font-bold shadow-lg flex items-center space-x-2 transition-all transform hover:-translate-y-0.5"
+            className="apple-btn-black px-7 py-3 text-sm flex items-center space-x-2 shadow-lg"
           >
-            <span>Start Free Forecast</span>
-            <ArrowRight className="w-4 h-4" />
+            <Zap className="w-4 h-4 fill-white" />
+            <span>Protect your household bill</span>
           </Link>
           <Link
             href="/dashboard"
-            className="px-5 py-3 rounded-xl border border-gray-200 bg-white/80 hover:bg-white text-sm font-semibold text-gray-700 shadow-sm transition"
+            className="apple-btn-secondary px-6 py-3 text-sm font-semibold"
           >
-            View Live Demo Window
+            Explore Live Dashboard
           </Link>
         </div>
 
-        {/* Hero macOS App Preview Window */}
-        <div className="mt-12 max-w-4xl mx-auto mac-window rounded-2xl overflow-hidden shadow-2xl border border-white/80 text-left">
-          <div className="bg-[#fcfbfe]/90 backdrop-blur-md px-4 py-3 border-b border-gray-200/80 flex items-center justify-between">
+        {/* Feature Pills under CTA */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-500 font-medium">
+          <span>Deterministic CEB tariffs</span>
+          <span>•</span>
+          <span>Sparse meter readings</span>
+          <span>•</span>
+          <span>Anti-Slab cliff mitigation</span>
+          <span>•</span>
+          <span>Sinhala, Tamil & English</span>
+        </div>
+
+        {/* Live macOS Widget Glass Dock (Visual Showcase from prompt) */}
+        <div className="mt-14 max-w-3xl mx-auto apple-dock-card overflow-hidden text-left relative shadow-2xl">
+          {/* Top Bar with Center Notch */}
+          <div className="px-5 py-3 flex items-center justify-between border-b border-black/[0.06] bg-white/50 relative">
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">
-                Live Arbitrage Preview • Colombo Residence
-              </span>
+              <div className="w-5 h-5 rounded-md bg-black text-white flex items-center justify-center text-[10px] font-bold">
+                <Zap className="w-3 h-3 fill-white" />
+              </div>
+              <span className="font-bold text-xs tracking-tight text-black">TariffPredict Dock</span>
             </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
-              Anti-Slab Active
-            </span>
+
+            {/* macOS Style Notch in center */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 px-6 py-1 notch-pill text-white text-[10px] font-medium flex items-center space-x-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Slab Guard Active</span>
+            </div>
+
+            <div className="flex items-center space-x-3 text-gray-400 text-xs">
+              <Search className="w-3.5 h-3.5 hover:text-black cursor-pointer transition" />
+              <Wifi className="w-3.5 h-3.5 text-gray-600" />
+              <span className="text-[11px] font-semibold text-gray-700">09:41</span>
+            </div>
           </div>
 
-          <div className="p-6 bg-white/90 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl md:col-span-2">
-              <div className="flex items-center space-x-2 text-amber-800 text-xs font-bold uppercase tracking-wider mb-1">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <span>Anti-Slab Alert: 60-Unit Threshold</span>
+          {/* Dock Widget Body */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 bg-white/70">
+            {/* Widget 1: Anti-Slab Alert */}
+            <div className="p-5 rounded-2xl bg-black text-white md:col-span-2 flex flex-col justify-between shadow-lg">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[11px] font-bold tracking-wider uppercase text-amber-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping inline-block" />
+                    Anti-Slab Alert Triggered
+                  </span>
+                  <span className="text-[11px] bg-white/10 px-2 py-0.5 rounded-full text-gray-300 font-mono">
+                    60-Unit Boundary
+                  </span>
+                </div>
+                <h3 className="text-base sm:text-lg font-bold leading-snug">
+                  "At your current pace you will probably use about 64 units, with a high chance of crossing the 60-unit slab."
+                </h3>
+                <p className="text-xs text-gray-300 mt-2 leading-relaxed">
+                  Using about <strong className="text-white">0.25 fewer units per day</strong> from today keeps you inside the lower block and saves about <strong className="text-emerald-300">Rs. 1,422.00</strong>.
+                </p>
               </div>
-              <p className="text-sm font-medium text-gray-800 mt-2">
-                "You are on track for about 64 units. Using about <strong>0.25 fewer units per day</strong> for the next 16 days keeps you in the lower block and saves about <strong>Rs. 1,422</strong>."
-              </p>
+              <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+                <span className="text-gray-400">Days remaining: 16 days</span>
+                <Link href="/anti-slab" className="text-amber-300 font-bold hover:underline inline-flex items-center gap-1">
+                  <span>View Details</span>
+                  <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
             </div>
 
-            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col justify-between">
+            {/* Widget 2: Month-End Range Preview */}
+            <div className="p-5 rounded-2xl bg-white border border-black/[0.08] flex flex-col justify-between shadow-sm">
               <div>
-                <span className="text-xs text-gray-500 font-semibold block">Predicted End-of-Month</span>
-                <span className="text-2xl font-black text-gray-900 mt-1 block">Rs. 3,042</span>
-                <span className="text-[11px] text-gray-500 block mt-0.5">Target if kept ≤60: Rs. 1,620</span>
+                <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider block">
+                  Projected Consumption
+                </span>
+                <div className="mt-2 text-2xl font-black text-black tracking-tight">
+                  58 – 71 <span className="text-xs font-semibold text-gray-500">units</span>
+                </div>
+                <div className="mt-1 text-sm font-bold text-gray-800">
+                  Rs. 1,620 – Rs. 3,672
+                </div>
+                <p className="text-[11px] text-gray-500 mt-2 leading-normal">
+                  Strictly deterministic calculation based on official PUCSL domestic tariffs.
+                </p>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
-                <div className="bg-amber-500 h-2 rounded-full w-[82%]" />
+
+              <div className="mt-4">
+                <div className="flex justify-between text-[11px] font-medium text-gray-600 mb-1">
+                  <span>Current 60-Slab Target</span>
+                  <span className="font-bold text-amber-600">82%</span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <div className="bg-black h-2 rounded-full w-[82%]" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Core Principle & Architecture Highlights */}
-      <section id="features" className="py-16 px-4 max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-            Engineered with Uncompromising Determinism
+      {/* Feature Showcase Section */}
+      <section id="features" className="py-20 px-4 max-w-4xl mx-auto border-t border-black/[0.06]">
+        <div className="text-center mb-14">
+          <div className="apple-kicker justify-center mb-2">
+            <span>Essential Intelligence</span>
+          </div>
+          <h2 className="text-3xl font-extrabold text-black tracking-tight">
+            Designed for Sri Lankan households.
           </h2>
-          <p className="text-xs sm:text-sm text-gray-500 mt-2 max-w-xl mx-auto">
-            Machine Learning predicts consumption units only. Official tariff matrices calculate every rupee.
+          <p className="text-sm text-gray-500 mt-2 max-w-lg mx-auto">
+            Everything you need to stop surprise utility bills before the billing cycle closes.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="mac-window p-6 rounded-2xl border border-white/70 shadow-sm hover:shadow-md transition">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#5865F2] flex items-center justify-center mb-4">
-              <Layers className="w-5 h-5" />
+          {/* Feature Card 1 */}
+          <div className="apple-sub-card p-6 flex flex-col justify-between hover:shadow-lg transition">
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center mb-4 shadow-sm">
+                <Layers className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-black">Likely Range Projections</h3>
+              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                Rather than giving you an unreliable single number, we calculate a transparent confidence range (e.g. 58 to 71 units) and compute both boundaries deterministically.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-gray-900">Deterministic Engine</h3>
-            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-              Never lets black-box ML hallucinate financial bills. Tariffs follow versioned JSON blocks with exact slab step boundaries.
-            </p>
+            <div className="mt-6 pt-3 border-t border-black/[0.06] text-xs font-semibold text-black flex items-center justify-between">
+              <span>Unbiased ML engine</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
           </div>
 
-          {/* Card 2 */}
-          <div className="mac-window p-6 rounded-2xl border border-white/70 shadow-sm hover:shadow-md transition">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
-              <CloudSun className="w-5 h-5" />
+          {/* Feature Card 2 */}
+          <div className="apple-sub-card p-6 flex flex-col justify-between hover:shadow-lg transition">
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center mb-4 shadow-sm">
+                <CloudSun className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-black">Weather Disaggregation</h3>
+              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                Separates routine household baseline usage from weather-driven cooling loads (using local Cooling Degree Days), showing why your meter accelerated.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-gray-900">Weather Disaggregation</h3>
-            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-              Integrates Open-Meteo cooling degree days (CDD) to tell you exactly how many extra units a heatwave or dry spell will add.
-            </p>
+            <div className="mt-6 pt-3 border-t border-black/[0.06] text-xs font-semibold text-black flex items-center justify-between">
+              <span>Open-Meteo CDD live feed</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
           </div>
 
-          {/* Card 3 */}
-          <div className="mac-window p-6 rounded-2xl border border-white/70 shadow-sm hover:shadow-md transition">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
-              <Camera className="w-5 h-5" />
+          {/* Feature Card 3 */}
+          <div className="apple-sub-card p-6 flex flex-col justify-between hover:shadow-lg transition">
+            <div>
+              <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center mb-4 shadow-sm">
+                <Camera className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-black">Sparse Weekend Logging</h3>
+              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                Enter your meter reading just once a week or fortnight. Type it manually or use camera OCR assist with mandatory confirmation to ensure 100% accuracy.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-gray-900">OCR Assist + User Confirm</h3>
-            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
-              Scan your meter with input assistance, but readings are strictly confirmed by you before any save to ensure flawless records.
-            </p>
+            <div className="mt-6 pt-3 border-t border-black/[0.06] text-xs font-semibold text-black flex items-center justify-between">
+              <span>Prompt on weekends</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200/70 py-8 px-4 text-center text-xs text-gray-500 max-w-5xl mx-auto">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <p>© 2026 Tiered Utility Tariff Arbitrage & Disaggregation Predictor.</p>
-          <div className="flex space-x-4">
-            <Link href="/how-it-works" className="hover:text-gray-900 font-medium">How It Works</Link>
-            <Link href="/anti-slab" className="hover:text-gray-900 font-medium">Anti-Slab Alert</Link>
-            <Link href="/login" className="hover:text-gray-900 font-medium">Sign In</Link>
-            <Link href="/register" className="hover:text-gray-900 font-medium">Register</Link>
-            <Link href="/dashboard" className="hover:text-gray-900 font-medium">Dashboard</Link>
+      <footer className="border-t border-black/[0.06] py-10 px-4 text-center text-xs text-gray-500 max-w-4xl mx-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-5 h-5 rounded-md bg-black text-white flex items-center justify-center text-[10px] font-bold">
+              <Zap className="w-3 h-3 fill-white" />
+            </div>
+            <span className="font-bold text-gray-900">TariffPredict LK</span>
+            <span>• © 2026 Deterministic Utility Engine</span>
+          </div>
+
+          <div className="flex space-x-5 font-medium text-gray-600">
+            <Link href="/how-it-works" className="hover:text-black transition">How It Works</Link>
+            <Link href="/anti-slab" className="hover:text-black transition">Anti-Slab Alert</Link>
+            <Link href="/login" className="hover:text-black transition">Sign In</Link>
+            <Link href="/register" className="hover:text-black transition">Register</Link>
+            <Link href="/dashboard" className="hover:text-black transition">Dashboard</Link>
           </div>
         </div>
       </footer>
