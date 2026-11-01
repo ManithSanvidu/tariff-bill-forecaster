@@ -37,6 +37,7 @@ import {
   Legend
 } from "recharts";
 import { translations, Language } from "../lib/translations";
+import { API_BASE_URL } from "../lib/api";
 
 interface ProjectionData {
   household_id: string;
@@ -247,19 +248,19 @@ export default function Home() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const projRes = await fetch(`http://127.0.0.1:8000/households/${householdId}/projection?utility_type=${utility}`);
+      const projRes = await fetch(`${API_BASE_URL}/households/${householdId}/projection?utility_type=${utility}`);
       if (projRes.ok) {
         const data = await projRes.json();
         setProjection(data);
       }
 
-      const alertRes = await fetch(`http://127.0.0.1:8000/households/${householdId}/alerts?utility_type=${utility}`);
+      const alertRes = await fetch(`${API_BASE_URL}/households/${householdId}/alerts?utility_type=${utility}`);
       if (alertRes.ok) {
         const aData = await alertRes.json();
         setAlerts(aData.alerts || []);
       }
 
-      const trendRes = await fetch(`http://127.0.0.1:8000/households/${householdId}/trends?utility_type=${utility}`);
+      const trendRes = await fetch(`${API_BASE_URL}/households/${householdId}/trends?utility_type=${utility}`);
       if (trendRes.ok) {
         const tData = await trendRes.json();
         setTrends(tData.trends || []);
@@ -287,7 +288,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("http://127.0.0.1:8000/ocr/extract", {
+      const res = await fetch(`${API_BASE_URL}/ocr/extract`, {
         method: "POST",
         body: formData,
       });
@@ -327,7 +328,7 @@ export default function Home() {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/readings", {
+      const res = await fetch(`${API_BASE_URL}/readings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

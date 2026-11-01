@@ -11,6 +11,8 @@ node_modules/
 out/
 dist/
 build/
+.env
+.env.local
 *.env
 .env.example
 .DS_Store
