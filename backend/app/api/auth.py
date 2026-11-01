@@ -80,6 +80,8 @@ def register_user(req: RegisterRequest, db: Session = Depends(get_db)):
             "id": user.id,
             "name": req.name,
             "email": user.email,
+            "district": req.district,
+            "provider": req.electricity_provider,
         },
         household_id=household.id,
     )
@@ -122,6 +124,8 @@ def login_user(req: LoginRequest, db: Session = Depends(get_db)):
             "id": user.id,
             "name": email_clean.split("@")[0].capitalize(),
             "email": user.email,
+            "district": getattr(hh, "district", "Colombo"),
+            "provider": getattr(hh, "electricity_provider", "CEB"),
         },
         household_id=hh_id,
     )

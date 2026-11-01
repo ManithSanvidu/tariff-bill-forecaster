@@ -155,6 +155,14 @@ def get_household_projection(
     utility_type: str = "electricity",
     db: Session = Depends(get_db)
 ):
+    # Fetch household profile to determine provider and locality
+    hh = db.query(Household).filter_by(id=household_id).first()
+    provider = "CEB"
+    if utility_type == "water":
+        provider = getattr(hh, "water_provider", "NWSDB") if hh else "NWSDB"
+    else:
+        provider = getattr(hh, "electricity_provider", "CEB") if hh else "CEB"
+
     # Fetch readings for this household
     readings = (
         db.query(MeterReading)
@@ -192,10 +200,10 @@ def get_household_projection(
     low_units = ml_result["projected_units_low"]
     high_units = ml_result["projected_units_high"]
 
-    # Deterministic pricing
-    bill_low = tariff_engine.price(low_units, utility=utility_type)
-    bill_likely = tariff_engine.price(likely_units, utility=utility_type)
-    bill_high = tariff_engine.price(high_units, utility=utility_type)
+    # Deterministic pricing using official provider schedule
+    bill_low = tariff_engine.price(low_units, utility=utility_type, provider=provider)
+    bill_likely = tariff_engine.price(likely_units, utility=utility_type, provider=provider)
+    bill_high = tariff_engine.price(high_units, utility=utility_type, provider=provider)
 
     # Next slab progress
     slabs = [30, 60, 90, 120, 180]
@@ -251,10 +259,20 @@ def get_household_alerts(
         "units_so_far": proj_data["units_so_far"],
     }
 
+    hh = db.query(Household).filter_by(id=household_id).first()
+    provider = "CEB"
+    if utility_type == "water":
+        provider = getattr(hh, "water_provider", "NWSDB") if hh else "NWSDB"
+        thresholds = [15, 25, 40]
+    else:
+        provider = getattr(hh, "electricity_provider", "CEB") if hh else "CEB"
+        thresholds = [30, 60, 90, 120, 180]
+
     alert = forecaster.generate_anti_slab_alert(
         projection=projection_dict,
-        slab_thresholds=[60, 90, 120, 180],
+        slab_thresholds=thresholds,
         utility=utility_type,
+        provider=provider,
     )
 
     return {

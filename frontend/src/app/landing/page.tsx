@@ -17,7 +17,8 @@ import {
   CloudSun,
   Layers,
   ChevronRight,
-  UserCheck
+  UserCheck,
+  LogOut
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -33,6 +34,16 @@ export default function LandingPage() {
     }
   }, []);
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("user_token");
+      localStorage.removeItem("user_info");
+      localStorage.removeItem("household_id");
+    } catch (e) {}
+    setCurrentUser(null);
+    router.push("/login");
+  };
+
   return (
     <div className="min-h-screen text-gray-900 font-sans selection:bg-[#5865F2] selection:text-white">
       {/* Background Glows */}
@@ -45,11 +56,6 @@ export default function LandingPage() {
       <nav className="sticky top-4 z-40 max-w-5xl mx-auto px-4">
         <div className="mac-window rounded-2xl px-5 py-3.5 flex items-center justify-between shadow-lg">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1.5 mr-2">
-              <span className="mac-traffic-light bg-[#ff5f56]" />
-              <span className="mac-traffic-light bg-[#ffbd2e]" />
-              <span className="mac-traffic-light bg-[#27c93f]" />
-            </div>
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#5865F2] to-indigo-400 flex items-center justify-center text-white shadow-sm">
                 <Zap className="w-4 h-4 text-amber-300" />
@@ -62,20 +68,29 @@ export default function LandingPage() {
 
           <div className="hidden md:flex items-center space-x-6 text-xs font-semibold text-gray-600">
             <a href="#features" className="hover:text-gray-900 transition">Features</a>
-            <a href="#how-it-works" className="hover:text-gray-900 transition">How It Works</a>
-            <a href="#anti-slab" className="hover:text-gray-900 transition">Anti-Slab Alert</a>
+            <Link href="/how-it-works" className="hover:text-gray-900 transition">How It Works</Link>
+            <Link href="/anti-slab" className="hover:text-gray-900 transition">Anti-Slab Alert</Link>
             <a href="https://www.pucsl.gov.lk/electricity/tariff/domestic/" target="_blank" rel="noreferrer" className="hover:text-gray-900 transition">PUCSL Tariffs</a>
           </div>
 
           <div className="flex items-center space-x-2.5">
             {currentUser ? (
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1.5 transition-all"
-              >
-                <span>Dashboard ({currentUser.name})</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white text-xs font-bold shadow-md flex items-center space-x-1.5 transition-all"
+                >
+                  <span>Dashboard ({currentUser.name})</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold shadow-sm transition"
+                  title="Log Out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
             ) : (
               <>
                 <Link
@@ -136,10 +151,7 @@ export default function LandingPage() {
         <div className="mt-12 max-w-4xl mx-auto mac-window rounded-2xl overflow-hidden shadow-2xl border border-white/80 text-left">
           <div className="bg-[#fcfbfe]/90 backdrop-blur-md px-4 py-3 border-b border-gray-200/80 flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="mac-traffic-light bg-[#ff5f56]" />
-              <span className="mac-traffic-light bg-[#ffbd2e]" />
-              <span className="mac-traffic-light bg-[#27c93f]" />
-              <span className="ml-3 text-xs font-semibold text-gray-400 tracking-wider uppercase">
+              <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">
                 Live Arbitrage Preview • Colombo Residence
               </span>
             </div>
@@ -225,6 +237,8 @@ export default function LandingPage() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p>© 2026 Tiered Utility Tariff Arbitrage & Disaggregation Predictor.</p>
           <div className="flex space-x-4">
+            <Link href="/how-it-works" className="hover:text-gray-900 font-medium">How It Works</Link>
+            <Link href="/anti-slab" className="hover:text-gray-900 font-medium">Anti-Slab Alert</Link>
             <Link href="/login" className="hover:text-gray-900 font-medium">Sign In</Link>
             <Link href="/register" className="hover:text-gray-900 font-medium">Register</Link>
             <Link href="/dashboard" className="hover:text-gray-900 font-medium">Dashboard</Link>

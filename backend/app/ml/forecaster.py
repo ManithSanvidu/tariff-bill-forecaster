@@ -161,18 +161,27 @@ class MLConsumptionForecaster:
         elif high_units >= target_slab:
             crossing_prob = 0.65
 
-        # Plain language alert text
+        # Plain language alert text matching specification
         if units_to_cut > 0:
+            if crossing_prob >= 0.75:
+                chance_desc = "a high chance"
+            elif crossing_prob >= 0.5:
+                chance_desc = "a moderate chance"
+            else:
+                chance_desc = "a chance"
+
             message = (
-                f"You are on track for about {likely_units:.0f} units. "
-                f"Using about {daily_reduction_needed:.1f} fewer units per day for the next "
-                f"{rem_days} days keeps you in the lower block and saves about Rs. {potential_saving_lkr:,.0f}."
+                f"At your current pace you will probably use about {likely_units:.0f} units, "
+                f"with {chance_desc} of crossing the {target_slab}-unit slab. "
+                f"Using about {daily_reduction_needed:.1f} fewer units per day from today "
+                f"keeps you inside the lower block and saves about Rs. {potential_saving_lkr:,.0f}."
             )
         else:
             message = (
-                f"You are currently at {likely_units:.0f} units, approaching the {target_slab}-unit slab. "
-                f"Keeping your daily use under {(target_slab - projection['units_so_far']) / rem_days:.1f} units/day "
-                f"maintains your lower rate."
+                f"At your current pace you are projected at {likely_units:.0f} units, "
+                f"approaching the {target_slab}-unit slab. "
+                f"Keeping your daily consumption below {(target_slab - projection['units_so_far']) / rem_days:.1f} units/day "
+                f"maintains your lower rate and avoids entering the higher block."
             )
 
         return {

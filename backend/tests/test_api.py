@@ -81,4 +81,4 @@ def test_projection_and_anti_slab_alert():
     assert alert_res.status_code == 200
     alerts = alert_res.json()["alerts"]
     assert len(alerts) > 0
-    assert "You are on track" in alerts[0]["message"] or "approaching" in alerts[0]["message"]
+    assert "At your current pace" in alerts[0]["message"] or "You are on track" in alerts[0]["message"] or "approaching" in alerts[0]["message"]

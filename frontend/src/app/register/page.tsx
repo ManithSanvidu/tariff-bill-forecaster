@@ -59,10 +59,7 @@ export default function RegisterPage() {
         {/* macOS Title Bar with Traffic Light Controls */}
         <div className="bg-[#fcfbfe]/90 backdrop-blur-md px-4 py-3 border-b border-gray-200/80 flex items-center justify-between select-none">
           <div className="flex items-center space-x-2">
-            <span className="mac-traffic-light bg-[#ff5f56]" />
-            <span className="mac-traffic-light bg-[#ffbd2e]" />
-            <span className="mac-traffic-light bg-[#27c93f]" />
-            <span className="ml-3 text-xs font-semibold text-gray-400 tracking-wider uppercase">
+            <span className="text-xs font-semibold text-gray-400 tracking-wider uppercase">
               Registration
             </span>
           </div>
