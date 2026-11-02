@@ -12,6 +12,7 @@ Endpoints:
 from datetime import date, datetime
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, Depends, HTTPException, Query, UploadFile, File
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -39,6 +40,19 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+
+# Global exception handler so that serverless errors return detailed JSON instead of crashing
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    import traceback
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal Server Error",
+            "detail": str(exc),
+            "traceback": traceback.format_exc().splitlines()
+        }
+    )
 
 # Parse allowed origins from environment variable
 raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")

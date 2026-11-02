@@ -1,2 +1,4 @@
 [tool.vercel]
-entrypoint = "app.api.routes:app"
+entrypoint = "api/index.py:app"
+[tool.vercel.fastapi.static]
+cdn = false
