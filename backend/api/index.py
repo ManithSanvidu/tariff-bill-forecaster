@@ -10,3 +10,4 @@ from app.api.routes import app
 
 # Explicit top-level assignment for Vercel AST parser
 app = app
+

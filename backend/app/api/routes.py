@@ -29,8 +29,6 @@ if backend_root not in sys.path:
 from app.db.session import get_db, init_db
 from app.db.models import Household, MeterReading, Alert, Prediction, BillingCycle
 from app.tariff_engine.engine import TariffEngine
-from app.ml.forecaster import MLConsumptionForecaster
-from app.services.cleaner import ReadingValidator
 from app.api.auth import router as auth_router
 
 app = FastAPI(
@@ -83,6 +81,7 @@ def get_tariff_engine():
 def get_forecaster():
     global _forecaster
     if _forecaster is None:
+        from app.ml.forecaster import MLConsumptionForecaster
         _forecaster = MLConsumptionForecaster(tariff_engine=get_tariff_engine())
     return _forecaster
 
@@ -90,6 +89,7 @@ def get_forecaster():
 def get_validator():
     global _validator
     if _validator is None:
+        from app.services.cleaner import ReadingValidator
         _validator = ReadingValidator()
     return _validator
 
