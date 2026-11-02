@@ -73,6 +73,13 @@ def get_forecaster():
     return _forecaster
 
 
+def get_validator():
+    global _validator
+    if _validator is None:
+        _validator = ReadingValidator()
+    return _validator
+
+
 class _LazyProxy:
     def __init__(self, getter):
         self._getter = getter
@@ -98,7 +105,8 @@ def health_check():
     return {
         "status": "healthy",
         "service": "Tiered Utility Tariff Predictor API",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "timestamp": datetime.utcnow().isoformat(),
     }
 
 
@@ -123,16 +131,6 @@ class OCRExtractResponse(BaseModel):
     raw_text: str
     requires_user_confirmation: bool = True
     disclaimer: str = "Extracted value is an input assist only. You must confirm or correct the number before saving."
-
-
-# --- Endpoints ---
-@app.get("/")
-def health_check():
-    return {
-        "status": "online",
-        "service": "Tiered Utility Tariff Predictor",
-        "timestamp": datetime.utcnow().isoformat(),
-    }
 
 
 @app.get("/tariffs/{utility}")
