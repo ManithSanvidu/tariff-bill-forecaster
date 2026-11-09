@@ -10,6 +10,7 @@ Includes SQLite/in-memory disk caching and graceful fallback.
 from datetime import date, datetime, timedelta
 import json
 import logging
+import os
 import sqlite3
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
@@ -48,13 +49,17 @@ init_weather_cache()
 class OpenMeteoClient:
     def __init__(
         self,
-        archive_url: str = "https://archive-api.open-meteo.com/v1/archive",
-        forecast_url: str = "https://api.open-meteo.com/v1/forecast",
+        archive_url: Optional[str] = None,
+        forecast_url: Optional[str] = None,
         timeout: int = 10,
         cdd_base_temp: float = 24.0,  # Base threshold for cooling degree days
     ):
-        self.archive_url = archive_url
-        self.forecast_url = forecast_url
+        self.archive_url = archive_url or os.getenv(
+            "OPEN_METEO_BASE_URL", "https://archive-api.open-meteo.com/v1/archive"
+        )
+        self.forecast_url = forecast_url or os.getenv(
+            "OPEN_METEO_FORECAST_URL", "https://api.open-meteo.com/v1/forecast"
+        )
         self.timeout = timeout
         self.cdd_base_temp = cdd_base_temp
 

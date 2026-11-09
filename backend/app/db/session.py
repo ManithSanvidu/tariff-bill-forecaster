@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 from app.db.models import Base
 
 load_dotenv()
+# Also search project root for .env if backend is executed from root or subfolder
+root_env = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".env"))
+if os.path.exists(root_env):
+    load_dotenv(root_env)
 
 # Supabase or standard PostgreSQL connection string (falls back to local SQLite if not configured)
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -37,7 +41,21 @@ else:
         "pool_recycle": 300,
     }
 
-engine = create_engine(DATABASE_URL, connect_args=connect_args, **engine_kwargs)
+try:
+    if DATABASE_URL.startswith("postgresql"):
+        import psycopg2  # noqa: F401
+    engine = create_engine(DATABASE_URL, connect_args=connect_args, **engine_kwargs)
+except (ImportError, ModuleNotFoundError) as e:
+    import logging
+    logging.getLogger(__name__).warning(
+        f"PostgreSQL driver 'psycopg2' is not installed ({e}). "
+        "Falling back to local SQLite 'sqlite:///./tariff_forecaster.db'. "
+        "To use PostgreSQL, install 'psycopg2-binary' and ensure PostgreSQL is running."
+    )
+    DATABASE_URL = "sqlite:///./tariff_forecaster.db"
+    connect_args = {"check_same_thread": False}
+    engine_kwargs = {}
+    engine = create_engine(DATABASE_URL, connect_args=connect_args, **engine_kwargs)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
