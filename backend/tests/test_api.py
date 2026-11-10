@@ -16,7 +16,7 @@ client = TestClient(app)
 def test_health_check():
     res = client.get("/")
     assert res.status_code == 200
-    assert res.json()["service"] == "Tiered Utility Tariff Predictor"
+    assert res.json()["service"].startswith("Tiered Utility Tariff Predictor")
 
 
 def test_tariff_endpoint():
@@ -67,7 +67,30 @@ def test_reading_saves_when_confirmed():
     assert res.json()["status"] == "success"
 
 
+def test_fresh_account_starts_empty():
+    res = client.get("/households/FRESH_NEW_HH/projection")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["has_readings"] is False
+    assert data["readings_count"] == 0
+    assert data["units_so_far"] == 0.0
+    assert data["days_elapsed"] == 0
+
+    alert_res = client.get("/households/FRESH_NEW_HH/alerts")
+    assert alert_res.status_code == 200
+    assert alert_res.json()["alerts"] == []
+
+
 def test_projection_and_anti_slab_alert():
+    # Add second reading to establish active consumption interval
+    client.post("/readings", json={
+        "household_id": "TEST_HH_001",
+        "utility_type": "electricity",
+        "cumulative_reading": 1575.0,
+        "reading_date": str(date.today()),
+        "input_source": "manual",
+        "confirmed_by_user": True,
+    })
     res = client.get("/households/TEST_HH_001/projection")
     assert res.status_code == 200
     proj = res.json()

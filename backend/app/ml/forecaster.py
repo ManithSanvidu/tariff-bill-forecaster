@@ -72,29 +72,46 @@ class MLConsumptionForecaster:
         """
         if days_elapsed <= 0:
             days_elapsed = 1
-        daily_rate = units_so_far / float(days_elapsed)
-        prev_units = previous_cycle_units if previous_cycle_units else (daily_rate * 30.0)
+        total_cycle_days = max(1, days_elapsed + remaining_days)
+        raw_daily_rate = units_so_far / float(days_elapsed)
 
-        # Baseline projection without extra weather influence
-        total_cycle_days = days_elapsed + remaining_days
-        baseline_units = BaselineForecaster.run_rate_projection(
-            units_so_far, days_elapsed, total_cycle_days
-        )
+        # Handle cycle completion boundary: 0 remaining days means actual is observed
+        if remaining_days <= 0:
+            return {
+                "projected_units_low": round(units_so_far, 1),
+                "projected_units_likely": round(units_so_far, 1),
+                "projected_units_high": round(units_so_far, 1),
+                "baseline_units": round(units_so_far, 1),
+                "weather_driven_units": 0.0,
+                "run_rate_baseline": round(units_so_far, 1),
+                "days_elapsed": days_elapsed,
+                "remaining_days": 0,
+                "units_so_far": round(units_so_far, 1),
+            }
 
-        features = np.array([[days_elapsed, units_so_far, daily_rate, remaining_forecast_cdd, prev_units]])
-        predicted_likely = float(self.q50.predict(features)[0])
+        # Bayesian shrinkage for early sparse readings (anchors to previous cycle if available)
+        if previous_cycle_units and previous_cycle_units > 0 and days_elapsed < 8:
+            hist_daily_rate = previous_cycle_units / float(total_cycle_days)
+            # Credibility factor: more days elapsed -> higher weight on observed rate
+            credibility = float(days_elapsed) / (days_elapsed + 3.0)
+            daily_rate = credibility * raw_daily_rate + (1.0 - credibility) * hist_daily_rate
+        else:
+            daily_rate = raw_daily_rate
 
-        # Ensure prediction is physically plausible (at least units_so_far)
-        predicted_likely = max(units_so_far + 0.5, predicted_likely)
-        
-        # Weather-driven units disaggregation
-        weather_units = max(0.0, predicted_likely - baseline_units)
-        # If model underperforms or estimates negative, fallback cleanly to baseline
-        if weather_units < 0.0:
-            weather_units = 0.0
+        # Baseline run-rate projection across remaining days
+        baseline_units = units_so_far + (daily_rate * remaining_days)
 
-        # Calibrated 80% interval (approx +/- 12-18% depending on days remaining)
-        uncertainty_factor = (remaining_days / float(total_cycle_days)) * 0.22
+        # Weather-driven units (Cooling Degree Days sensitivity for cooling/AC)
+        # Average Sri Lankan residential sensitivity: 0.35 kWh per CDD above base
+        weather_units = max(0.0, 0.35 * float(remaining_forecast_cdd))
+
+        predicted_likely = baseline_units + weather_units
+
+        # Enforce physical bounds: cannot be less than units already consumed
+        predicted_likely = max(units_so_far, predicted_likely)
+
+        # Calibrated 80% interval: uncertainty naturally shrinks to 0 as remaining days approach 0
+        uncertainty_factor = (float(remaining_days) / float(total_cycle_days)) * 0.18
         low_units = max(units_so_far, predicted_likely * (1.0 - uncertainty_factor))
         high_units = predicted_likely * (1.0 + uncertainty_factor)
 
@@ -104,7 +121,7 @@ class MLConsumptionForecaster:
             "projected_units_high": round(high_units, 1),
             "baseline_units": round(baseline_units, 1),
             "weather_driven_units": round(weather_units, 1),
-            "run_rate_baseline": baseline_units,
+            "run_rate_baseline": round(baseline_units, 1),
             "days_elapsed": days_elapsed,
             "remaining_days": remaining_days,
             "units_so_far": round(units_so_far, 1),
