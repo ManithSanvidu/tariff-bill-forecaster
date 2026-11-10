@@ -35,6 +35,8 @@ if os.path.exists(root_env):
 from app.db.session import get_db, init_db
 from app.db.models import Household, MeterReading, Alert, Prediction, BillingCycle
 from app.tariff_engine.engine import TariffEngine
+from app.services.cleaner import ReadingValidator
+from app.services.weather import OpenMeteoClient
 from app.api.auth import router as auth_router
 
 app = FastAPI(
@@ -274,29 +276,151 @@ def get_household_projection(
         .all()
     )
 
+    # Fetch previous cycle consumption for shrinkage baseline
+    last_settled = (
+        db.query(BillingCycle)
+        .filter_by(household_id=household_id, utility_type=utility_type, is_settled=True)
+        .order_by(BillingCycle.end_date.desc())
+        .first()
+    )
+    prev_cycle_units = last_settled.billed_units if last_settled and last_settled.billed_units else None
+
     if not readings:
-        # Default starter demo projection if no readings exist yet
-        days_elapsed = 14
-        units_so_far = 41.5
-        remaining_days = 16
+        tariff = tariff_engine.find_tariff(utility=utility_type, provider=provider)
+        return {
+            "household_id": household_id,
+            "utility_type": utility_type,
+            "has_readings": False,
+            "readings_count": 0,
+            "days_elapsed": 0,
+            "remaining_days": 30,
+            "units_so_far": 0.0,
+            "projection": {
+                "units_low": 0.0,
+                "units_likely": 0.0,
+                "units_high": 0.0,
+                "bill_low_lkr": 0.0,
+                "bill_likely_lkr": 0.0,
+                "bill_high_lkr": 0.0,
+            },
+            "disaggregation": {
+                "baseline_units": 0.0,
+                "weather_driven_units": 0.0,
+                "run_rate_baseline": 0.0,
+            },
+            "slab_status": {
+                "current_slab": 0,
+                "next_slab": 30 if utility_type == "electricity" else 5,
+                "progress_percent": 0.0,
+            },
+            "tariff_meta": {
+                "tariff_id": tariff["tariff_id"],
+                "tariff_name": tariff["name"],
+                "verified": tariff.get("verified", False),
+                "warning": tariff.get("verification_todo"),
+            },
+            "message": "No readings recorded yet. Record your first meter reading to begin forecasting.",
+        }
     elif len(readings) == 1:
-        days_elapsed = 7
-        units_so_far = 20.0
-        remaining_days = 23
+        single_r = readings[0]
+        tariff = tariff_engine.find_tariff(utility=utility_type, provider=provider)
+        return {
+            "household_id": household_id,
+            "utility_type": utility_type,
+            "has_readings": True,
+            "readings_count": 1,
+            "initial_reading": single_r.cumulative_reading,
+            "initial_reading_date": single_r.reading_date.isoformat(),
+            "days_elapsed": 1,
+            "remaining_days": 29,
+            "units_so_far": 0.0,
+            "projection": {
+                "units_low": 0.0,
+                "units_likely": 0.0,
+                "units_high": 0.0,
+                "bill_low_lkr": 0.0,
+                "bill_likely_lkr": 0.0,
+                "bill_high_lkr": 0.0,
+            },
+            "disaggregation": {
+                "baseline_units": 0.0,
+                "weather_driven_units": 0.0,
+                "run_rate_baseline": 0.0,
+            },
+            "slab_status": {
+                "current_slab": 0,
+                "next_slab": 30 if utility_type == "electricity" else 5,
+                "progress_percent": 0.0,
+            },
+            "tariff_meta": {
+                "tariff_id": tariff["tariff_id"],
+                "tariff_name": tariff["name"],
+                "verified": tariff.get("verified", False),
+                "warning": tariff.get("verification_todo"),
+            },
+            "message": "Initial reading recorded. Add a second reading after a few days to calculate burn-rate.",
+        }
     else:
-        # Compute days elapsed and consumption between first and last reading
-        first_r = readings[0]
-        last_r = readings[-1]
-        days_elapsed = max(1, (last_r.reading_date - first_r.reading_date).days)
-        units_so_far = max(1.0, last_r.cumulative_reading - first_r.cumulative_reading)
-        remaining_days = max(1, 30 - days_elapsed)
+        # Scope readings to the active billing cycle
+        latest_date = readings[-1].reading_date
+        active_cycle = (
+            db.query(BillingCycle)
+            .filter_by(household_id=household_id, utility_type=utility_type, is_settled=False)
+            .order_by(BillingCycle.start_date.desc())
+            .first()
+        )
+        if active_cycle and active_cycle.start_date:
+            cycle_start = active_cycle.start_date
+        else:
+            from datetime import timedelta
+            cycle_start = latest_date - timedelta(days=32)
+
+        cycle_readings = [r for r in readings if r.reading_date >= cycle_start]
+        if len(cycle_readings) < 2:
+            cycle_readings = readings[-2:]
+
+        # Validate sequence through ReadingValidator
+        validator = ReadingValidator()
+        raw_seq = [{"date": r.reading_date, "reading": r.cumulative_reading} for r in cycle_readings]
+        intervals, _ = validator.validate_and_clean_sequence(raw_seq)
+
+        valid_intervals = [inv for inv in intervals if not inv.is_meter_reset]
+        if valid_intervals:
+            days_elapsed = sum(inv.days for inv in valid_intervals)
+            units_so_far = sum(inv.units_consumed for inv in valid_intervals)
+        else:
+            days_elapsed = max(1, (cycle_readings[-1].reading_date - cycle_readings[0].reading_date).days)
+            units_so_far = max(0.5, cycle_readings[-1].cumulative_reading - cycle_readings[0].cumulative_reading)
+
+        days_elapsed = max(1, min(30, days_elapsed))
+        units_so_far = max(0.5, units_so_far)
+        remaining_days = max(0, 30 - days_elapsed)
+
+    # Weather forecast CDD calculation (only applies to electricity cooling/AC)
+    remaining_forecast_cdd = 0.0
+    if utility_type == "electricity" and remaining_days > 0:
+        try:
+            weather_client = OpenMeteoClient()
+            lat = getattr(hh, "lat", 6.9271) or 6.9271
+            lon = getattr(hh, "lon", 79.8612) or 79.8612
+            today_str = date.today().isoformat()
+            from datetime import timedelta
+            end_str = (date.today() + timedelta(days=remaining_days)).isoformat()
+            w_data = weather_client.get_weather_for_range(
+                lat=lat, lon=lon, start_date=today_str, end_date=end_str
+            )
+            forecast_cdd = sum(d.get("cdd", 0.0) for d in w_data.values() if d.get("is_forecast"))
+            remaining_forecast_cdd = round(forecast_cdd, 1) if forecast_cdd > 0 else round(0.8 * remaining_days, 1)
+        except Exception:
+            remaining_forecast_cdd = round(0.8 * remaining_days, 1)
 
     # ML Quantile & weather disaggregation
     ml_result = forecaster.predict_units(
         days_elapsed=days_elapsed,
         units_so_far=units_so_far,
         remaining_days=remaining_days,
-        remaining_forecast_cdd=14.0,
+        remaining_forecast_cdd=remaining_forecast_cdd,
+        previous_cycle_units=prev_cycle_units,
     )
 
     likely_units = ml_result["projected_units_likely"]
@@ -317,6 +441,8 @@ def get_household_projection(
     return {
         "household_id": household_id,
         "utility_type": utility_type,
+        "has_readings": True,
+        "readings_count": len(readings),
         "days_elapsed": days_elapsed,
         "remaining_days": remaining_days,
         "units_so_far": round(units_so_far, 1),
@@ -355,6 +481,15 @@ def get_household_alerts(
 ):
     # Calculate current state projection
     proj_data = get_household_projection(household_id, utility_type, db)
+
+    # For fresh accounts with 0 or 1 readings, do not fire fake alerts
+    if not proj_data.get("has_readings") or proj_data.get("readings_count", 0) < 2:
+        return {
+            "household_id": household_id,
+            "alerts": [],
+            "active_count": 0,
+        }
+
     projection_dict = {
         "projected_units_likely": proj_data["projection"]["units_likely"],
         "projected_units_high": proj_data["projection"]["units_high"],
@@ -386,17 +521,32 @@ def get_household_alerts(
 
 
 @app.get("/households/{household_id}/trends")
-def get_household_trends(household_id: str, utility_type: str = "electricity"):
+def get_household_trends(
+    household_id: str,
+    utility_type: str = "electricity",
+    db: Session = Depends(get_db)
+):
     """
     Returns monthly cycles with temperature and rainfall overlay for Recharts.
+    Only returns actual cycles if present.
     """
-    # Demo/historical trend points
-    trends = [
-        {"cycle": "May 2023", "units": 54.0, "bill_lkr": 1440.0, "mean_temp": 29.8, "rainfall_mm": 180.5},
-        {"cycle": "Jun 2023", "units": 58.0, "bill_lkr": 1560.0, "mean_temp": 29.2, "rainfall_mm": 195.0},
-        {"cycle": "Jul 2023", "units": 63.0, "bill_lkr": 3126.0, "mean_temp": 28.5, "rainfall_mm": 110.0},
-        {"cycle": "Aug 2023", "units": 59.0, "bill_lkr": 1590.0, "mean_temp": 28.3, "rainfall_mm": 95.0},
-        {"cycle": "Sep 2023", "units": 61.0, "bill_lkr": 3042.0, "mean_temp": 28.7, "rainfall_mm": 140.0},
-        {"cycle": "Current (Est)", "units": 64.0, "bill_lkr": 3180.0, "mean_temp": 30.1, "rainfall_mm": 60.0},
-    ]
-    return {"household_id": household_id, "trends": trends}
+    cycles = (
+        db.query(BillingCycle)
+        .filter_by(household_id=household_id, utility_type=utility_type)
+        .order_by(BillingCycle.start_date.asc())
+        .all()
+    )
+    if cycles:
+        trends = [
+            {
+                "cycle": c.start_date.strftime("%b %Y"),
+                "units": round(c.billed_units or 0.0, 1),
+                "bill_lkr": round(c.billed_amount_lkr or 0.0, 1),
+                "mean_temp": 28.5,
+                "rainfall_mm": 120.0,
+            }
+            for c in cycles
+        ]
+        return {"household_id": household_id, "trends": trends}
+
+    return {"household_id": household_id, "trends": []}

@@ -23,7 +23,7 @@
         {"from_unit": 0, "to_unit": 5, "rate": 60.0},
         {"from_unit": 6, "to_unit": 10, "rate": 80.0},
         {"from_unit": 11, "to_unit": 15, "rate": 100.0},
-        {"from_unit": 12, "to_unit": 20, "rate": 110.0},
+        {"from_unit": 16, "to_unit": 20, "rate": 110.0},
         {"from_unit": 21, "to_unit": 25, "rate": 130.0},
         {"from_unit": 26, "to_unit": null, "rate": 160.0}
       ]

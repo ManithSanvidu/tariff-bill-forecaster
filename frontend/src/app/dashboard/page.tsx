@@ -42,6 +42,8 @@ import { API_BASE_URL } from "../lib/api";
 interface ProjectionData {
   household_id: string;
   utility_type: string;
+  has_readings?: boolean;
+  readings_count?: number;
   days_elapsed: number;
   remaining_days: number;
   units_so_far: number;
@@ -556,6 +558,50 @@ export default function Home() {
           {/* TAB 1: DASHBOARD */}
           {activeTab === "dashboard" && (
             <>
+              {/* Fresh Account Empty State Card */}
+              {projection?.has_readings === false && (
+                <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/30 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                  <div className="space-y-1">
+                    <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-0.5 rounded-full uppercase tracking-wider mb-1">
+                      <span>Fresh Account • Starting Fresh</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">Welcome! Record your first meter reading</h3>
+                    <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
+                      You are starting with a clean slate (0 units recorded). Enter your current physical meter dial reading to establish your baseline and begin tracking your billing cycle, anti-slab alerts, and bill projections.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="px-5 py-3 bg-black hover:bg-neutral-800 text-white rounded-2xl text-xs font-bold transition flex items-center space-x-2 shadow-md flex-shrink-0"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>{t.addReading}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Single Reading / Baseline Established State Card */}
+              {projection?.has_readings && projection?.readings_count === 1 && (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                  <div className="space-y-1">
+                    <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-amber-800 bg-amber-100 px-3 py-0.5 rounded-full uppercase tracking-wider mb-1">
+                      <span>Baseline Reading Recorded</span>
+                    </div>
+                    <h3 className="text-base font-bold text-gray-900">Starting meter dial logged</h3>
+                    <p className="text-xs text-gray-600 max-w-xl leading-relaxed">
+                      Your starting dial reading is saved. Log your next reading in a few days (or next weekend) to establish your active daily burn rate and unlock live month-end predictions.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="px-4 py-2.5 bg-black hover:bg-neutral-800 text-white rounded-2xl text-xs font-bold transition flex items-center space-x-2 shadow-md flex-shrink-0"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Log Second Reading</span>
+                  </button>
+                </div>
+              )}
+
               {/* Anti-Slab Alert Card */}
               {alerts && alerts.length > 0 && (
                 <div className="bg-black text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
@@ -602,16 +648,22 @@ export default function Home() {
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
                     <span className="text-3xl font-black text-black tracking-tight">
-                      {Math.round(projection?.projection.units_low ?? 58)} to {Math.round(projection?.projection.units_high ?? 71)}
+                      {projection?.has_readings === false
+                        ? "0"
+                        : `${Math.round(projection?.projection.units_low ?? 0)} to ${Math.round(projection?.projection.units_high ?? 0)}`}
                     </span>
                     <span className="text-xs font-semibold text-gray-500">{t.unitsKwh}</span>
                   </div>
                   <div className="mt-3 text-xs text-gray-600 bg-black/5 p-2.5 rounded-xl flex items-center justify-between">
                     <span>
                       <span className="font-semibold text-gray-700">Likely Median:</span>{" "}
-                      <strong className="text-black">{projection?.projection.units_likely ?? "64.0"} kWh</strong>
+                      <strong className="text-black">
+                        {projection?.has_readings === false ? "0.0 kWh (Fresh)" : `${projection?.projection.units_likely ?? "0.0"} kWh`}
+                      </strong>
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-black bg-white px-2 py-0.5 rounded-md shadow-2xs">80% Interval</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-black bg-white px-2 py-0.5 rounded-md shadow-2xs">
+                      {projection?.has_readings === false ? "Awaiting Data" : "80% Interval"}
+                    </span>
                   </div>
                 </div>
 
@@ -623,13 +675,19 @@ export default function Home() {
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
                     <span className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-                      Rs. {Math.round(projection?.projection.bill_low_lkr ?? 1580).toLocaleString()} – Rs. {Math.round(projection?.projection.bill_high_lkr ?? 3450).toLocaleString()}
+                      {projection?.has_readings === false
+                        ? "Rs. 0"
+                        : `Rs. ${Math.round(projection?.projection.bill_low_lkr ?? 0).toLocaleString()} – Rs. ${Math.round(projection?.projection.bill_high_lkr ?? 0).toLocaleString()}`}
                     </span>
                   </div>
                   <div className="mt-3 text-xs text-emerald-900 bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-200/80 flex items-center justify-between">
                     <span>
                       <span className="font-semibold">Likely Bill:</span>{" "}
-                      <strong>Rs. {projection?.projection.bill_likely_lkr.toLocaleString() ?? "3,180"}</strong>
+                      <strong>
+                        {projection?.has_readings === false
+                          ? "Rs. 0 (No usage yet)"
+                          : `Rs. ${projection?.projection.bill_likely_lkr.toLocaleString() ?? "0"}`}
+                      </strong>
                     </span>
                     <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider bg-white px-2 py-0.5 rounded-md">Deterministic</span>
                   </div>
@@ -643,15 +701,15 @@ export default function Home() {
                   </div>
                   <div className="mt-3 flex items-baseline space-x-2">
                     <span className="text-3xl font-black text-black tracking-tight">
-                      {projection?.days_elapsed ?? 14}
+                      {projection?.days_elapsed ?? 0}
                     </span>
                     <span className="text-xs font-semibold text-gray-500">
-                      / 30 {t.days} ({projection?.remaining_days ?? 16} {t.daysLeft})
+                      / 30 {t.days} ({projection?.remaining_days ?? 30} {t.daysLeft})
                     </span>
                   </div>
                   <div className="mt-3 text-xs text-gray-600 bg-black/5 p-2 rounded-xl">
                     <span className="font-semibold text-gray-700">{t.recordedToDate}:</span>{" "}
-                    <strong className="text-black">{projection?.units_so_far ?? 41.5} units</strong>
+                    <strong className="text-black">{projection?.units_so_far ?? 0} units</strong>
                   </div>
                 </div>
               </div>
@@ -660,26 +718,26 @@ export default function Home() {
               <div className="apple-dock-card p-6">
                 <div className="flex items-center justify-between mb-2 text-xs">
                   <span className="font-bold text-black">
-                    {t.tariffSlabLevel}: {projection?.slab_status.current_slab ?? 60} Units
+                    {t.tariffSlabLevel}: {projection?.slab_status.current_slab ?? 0} Units
                   </span>
                   <span className="font-semibold text-gray-500">
-                    {t.approachingThreshold}: {projection?.slab_status.next_slab ?? 90} Units
+                    {t.approachingThreshold}: {projection?.slab_status.next_slab ?? 30} Units
                   </span>
                 </div>
                 <div className="w-full bg-black/5 rounded-full h-3 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
-                      (projection?.slab_status.progress_percent ?? 50) > 75
+                      (projection?.slab_status.progress_percent ?? 0) > 75
                         ? "bg-amber-500"
                         : "bg-black"
                     }`}
-                    style={{ width: `${projection?.slab_status.progress_percent ?? 50}%` }}
+                    style={{ width: `${projection?.slab_status.progress_percent ?? 0}%` }}
                   />
                 </div>
                 <div className="flex justify-between items-center mt-2 text-[11px] text-gray-500">
                   <span>0 Units</span>
                   <span className="font-semibold text-black">
-                    {projection?.slab_status.progress_percent ?? 50}% {t.ofCurrentBlockConsumed}
+                    {projection?.slab_status.progress_percent ?? 0}% {t.ofCurrentBlockConsumed}
                   </span>
                   <span>180+ Units</span>
                 </div>
@@ -697,7 +755,7 @@ export default function Home() {
                   <div className="p-4 bg-black/5 rounded-2xl border border-black/[0.04]">
                     <span className="text-gray-500 block font-semibold">{t.baselineHouseholdLoad}</span>
                     <span className="text-2xl font-black text-black mt-1 block tracking-tight">
-                      {projection?.disaggregation.baseline_units ?? 60.0} units
+                      {projection?.disaggregation.baseline_units ?? 0.0} units
                     </span>
                     <span className="text-[11px] text-gray-500 mt-1.5 block leading-normal">
                       {t.baselineDescription}
@@ -706,10 +764,12 @@ export default function Home() {
                   <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200">
                     <span className="text-amber-900 font-semibold block">{t.weatherDrivenLoad}</span>
                     <span className="text-2xl font-black text-amber-950 mt-1 block tracking-tight">
-                      +{projection?.disaggregation.weather_driven_units ?? 4.0} units
+                      +{projection?.disaggregation.weather_driven_units ?? 0.0} units
                     </span>
                     <span className="text-[11px] text-amber-900 mt-1.5 block font-medium leading-normal">
-                      "A hot week ahead is adding about {projection?.disaggregation.weather_driven_units ?? 4.0} units (cooling & fans)."
+                      {projection?.has_readings === false
+                        ? "Weather sensitivity will activate once baseline readings are logged."
+                        : `A hot week ahead is adding about ${projection?.disaggregation.weather_driven_units ?? 0.0} units (cooling & fans).`}
                     </span>
                     <span className="text-[10px] text-amber-700/80 block mt-1">
                       Disaggregated via Open-Meteo CDD (No appliance-level sensors needed).

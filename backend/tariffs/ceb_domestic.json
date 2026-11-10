@@ -23,7 +23,7 @@
     {
       "max_units": null,
       "fixed_charge_by_block": [
-        {"from_unit": 61, "to_unit": 90, "fixed_charge": 480.0},
+        {"from_unit": 0, "to_unit": 90, "fixed_charge": 480.0},
         {"from_unit": 91, "to_unit": 120, "fixed_charge": 1180.0},
         {"from_unit": 121, "to_unit": 180, "fixed_charge": 1720.0},
         {"from_unit": 181, "to_unit": null, "fixed_charge": 2150.0}
