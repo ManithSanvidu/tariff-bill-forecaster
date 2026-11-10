@@ -3,8 +3,12 @@ echo ========================================================
 echo Starting Tiered Utility Tariff Arbitrage & Predictor App
 echo ========================================================
 
-echo 1. Starting FastAPI Backend on http://127.0.0.1:8000 ...
-start "Backend (FastAPI)" cmd /k "cd backend && ..\.venv\Scripts\python.exe -m uvicorn app.api.routes:app --host 127.0.0.1 --port 8000 --reload"
+set PYTHON_CMD=python
+if exist ".venv\Scripts\python.exe" set PYTHON_CMD=.venv\Scripts\python.exe
+if exist "backend\.venv\Scripts\python.exe" set PYTHON_CMD=backend\.venv\Scripts\python.exe
+
+echo 1. Starting FastAPI Backend (reading from .env) ...
+start "Backend (FastAPI)" cmd /k "%PYTHON_CMD% backend\main.py"
 
 echo 2. Starting Next.js Frontend on http://localhost:3000 ...
 start "Frontend (Next.js)" cmd /k "cd frontend && npm run dev"

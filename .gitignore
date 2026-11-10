@@ -14,10 +14,11 @@ build/
 .env
 .env.local
 *.env
-.env.example
+!.env.example
 .DS_Store
 Thumbs.db
 data/cache/
 data/synthetic/
 *.sqlite
 *.db
+*.db-journal
