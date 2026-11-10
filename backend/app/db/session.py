@@ -29,6 +29,19 @@ if not DATABASE_URL:
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+# Handle special characters in password (such as '@') if unencoded in DATABASE_URL
+if DATABASE_URL.startswith("postgresql://") or DATABASE_URL.startswith("postgresql+psycopg2://"):
+    import re
+    import urllib.parse
+    # Match postgresql://user:password@host...
+    match = re.match(r"^(postgresql(?:\+[a-zA-Z0-9_]+)?:\/\/)([^:]+):(.*)@([^@]+)$", DATABASE_URL)
+    if match:
+        prefix, user, raw_password, host_part = match.groups()
+        # If password contains unencoded special chars (like @), re-encode safely
+        if "%" not in raw_password:
+            encoded_password = urllib.parse.quote(raw_password, safe="")
+            DATABASE_URL = f"{prefix}{user}:{encoded_password}@{host_part}"
+
 connect_args = {}
 engine_kwargs = {}
 
@@ -45,14 +58,13 @@ try:
     if DATABASE_URL.startswith("postgresql"):
         import psycopg2  # noqa: F401
     engine = create_engine(DATABASE_URL, connect_args=connect_args, **engine_kwargs)
-except (ImportError, ModuleNotFoundError) as e:
+except Exception as e:
     import logging
     logging.getLogger(__name__).warning(
-        f"PostgreSQL driver 'psycopg2' is not installed ({e}). "
-        "Falling back to local SQLite 'sqlite:///./tariff_forecaster.db'. "
-        "To use PostgreSQL, install 'psycopg2-binary' and ensure PostgreSQL is running."
+        f"Database connection setup failed ({e}). Falling back to SQLite."
     )
-    DATABASE_URL = "sqlite:///./tariff_forecaster.db"
+    fallback_path = "/tmp/tariff_forecaster.db" if (os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME")) else "./tariff_forecaster.db"
+    DATABASE_URL = f"sqlite:///{fallback_path}"
     connect_args = {"check_same_thread": False}
     engine_kwargs = {}
     engine = create_engine(DATABASE_URL, connect_args=connect_args, **engine_kwargs)
